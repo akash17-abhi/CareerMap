@@ -1,0 +1,692 @@
+@import "tailwindcss";
+
+/* =========================================================
+   CareerMap — Global Design System
+   Mobile-first · Light premium SaaS · Accessible contrast
+   ========================================================= */
+
+:root {
+  /* ---------- Core surfaces ---------- */
+  --cm-bg: #ffffff;
+  --cm-surface: #f8fafc;
+  --cm-surface-elevated: #ffffff;
+  --cm-surface-soft: #f1f5f9;
+  --cm-surface-blue: #f8faff;
+
+  /* ---------- Text ---------- */
+  --cm-text: #0f172a;
+  --cm-text-strong: #020617;
+  --cm-text-secondary: #475569;
+  --cm-text-muted: #64748b;
+  --cm-text-subtle: #94a3b8;
+  --cm-text-inverse: #ffffff;
+
+  /* ---------- Borders ---------- */
+  --cm-border: #e2e8f0;
+  --cm-border-soft: #eef2f7;
+  --cm-border-strong: #cbd5e1;
+  --cm-border-focus: #60a5fa;
+
+  /* ---------- Brand ---------- */
+  --cm-blue: #2563eb;
+  --cm-blue-dark: #1d4ed8;
+  --cm-blue-deep: #1e40af;
+  --cm-indigo: #4f46e5;
+  --cm-violet: #7c3aed;
+
+  /* ---------- Semantic ---------- */
+  --cm-success: #059669;
+  --cm-success-soft: #ecfdf5;
+
+  --cm-warning: #d97706;
+  --cm-warning-soft: #fffbeb;
+
+  --cm-danger: #dc2626;
+  --cm-danger-soft: #fef2f2;
+
+  /* ---------- Radius ---------- */
+  --cm-radius-xs: 8px;
+  --cm-radius-sm: 10px;
+  --cm-radius-md: 12px;
+  --cm-radius-lg: 16px;
+  --cm-radius-xl: 20px;
+  --cm-radius-2xl: 24px;
+
+  /* ---------- Shadows ---------- */
+  --cm-shadow-xs:
+    0 1px 2px rgba(15, 23, 42, 0.04);
+
+  --cm-shadow-sm:
+    0 2px 8px rgba(15, 23, 42, 0.05);
+
+  --cm-shadow-md:
+    0 8px 24px rgba(15, 23, 42, 0.07);
+
+  --cm-shadow-lg:
+    0 18px 45px rgba(15, 23, 42, 0.09);
+
+  /* ---------- Layout ---------- */
+  --cm-container: 1280px;
+
+  --cm-gutter-mobile: 16px;
+  --cm-gutter-sm: 20px;
+  --cm-gutter-md: 24px;
+  --cm-gutter-lg: 28px;
+  --cm-gutter-xl: 32px;
+  --cm-gutter-2xl: 40px;
+
+  /* ---------- Section spacing ---------- */
+  --cm-section-mobile: 56px;
+  --cm-section-sm: 64px;
+  --cm-section-md: 72px;
+  --cm-section-lg: 84px;
+  --cm-section-xl: 96px;
+  --cm-section-2xl: 108px;
+}
+
+/* =========================================================
+   Reset
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--cm-bg);
+  color: var(--cm-text);
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  font-size: 16px;
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.16);
+  color: var(--cm-text-strong);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* =========================================================
+   Accessibility
+   ========================================================= */
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.24);
+  outline-offset: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  border-radius: var(--cm-radius-sm);
+}
+
+/* =========================================================
+   Scrollbar
+   ========================================================= */
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* =========================================================
+   Global Layout
+   ========================================================= */
+
+.careermap-container {
+  width: 100%;
+  max-width: var(--cm-container);
+  margin-inline: auto;
+  padding-inline: var(--cm-gutter-mobile);
+}
+
+.careermap-section {
+  width: 100%;
+  padding-block: var(--cm-section-mobile);
+}
+
+/* =========================================================
+   Surface System
+   ========================================================= */
+
+.careermap-card {
+  border: 1px solid var(--cm-border);
+  border-radius: var(--cm-radius-lg);
+  background: var(--cm-surface-elevated);
+  box-shadow: var(--cm-shadow-sm);
+}
+
+.careermap-card-soft {
+  border: 1px solid var(--cm-border-soft);
+  border-radius: var(--cm-radius-lg);
+  background: var(--cm-surface);
+}
+
+.careermap-surface {
+  background: var(--cm-surface);
+}
+
+.careermap-surface-soft {
+  background: var(--cm-surface-soft);
+}
+
+.careermap-surface-blue {
+  background: var(--cm-surface-blue);
+}
+
+/* =========================================================
+   Brand Gradient
+   ========================================================= */
+
+.careermap-text-gradient {
+  background:
+    linear-gradient(
+      100deg,
+      var(--cm-blue),
+      var(--cm-indigo),
+      var(--cm-violet)
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+/* =========================================================
+   Page Background Accent
+   ========================================================= */
+
+.careermap-page-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+.careermap-page-glow::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+
+  top: -140px;
+  left: 50%;
+
+  width: min(460px, 90vw);
+  height: 280px;
+
+  transform: translateX(-50%);
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(79, 70, 229, 0.08),
+      rgba(37, 99, 235, 0.025) 40%,
+      transparent 72%
+    );
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   Typography
+   ========================================================= */
+
+.careermap-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  margin: 0;
+
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+
+  color: var(--cm-blue);
+}
+
+.careermap-heading {
+  margin: 0;
+
+  color: var(--cm-text-strong);
+
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+
+.careermap-body {
+  margin: 0;
+
+  color: var(--cm-text-secondary);
+
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.careermap-muted {
+  color: var(--cm-text-muted);
+}
+
+.careermap-subtle {
+  color: var(--cm-text-subtle);
+}
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+
+.careermap-button {
+  display: inline-flex;
+
+  min-height: 46px;
+
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border: 1px solid transparent;
+  border-radius: var(--cm-radius-sm);
+
+  padding-inline: 16px;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.careermap-button:active {
+  transform: translateY(1px);
+}
+
+.careermap-button:disabled {
+  opacity: 0.55;
+  box-shadow: none;
+  transform: none;
+}
+
+.careermap-button-primary {
+  border-color: var(--cm-blue);
+  background: var(--cm-blue);
+  color: var(--cm-text-inverse);
+
+  box-shadow:
+    0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.careermap-button-primary:hover:not(:disabled) {
+  border-color: var(--cm-blue-dark);
+  background: var(--cm-blue-dark);
+
+  box-shadow:
+    0 6px 16px rgba(37, 99, 235, 0.18);
+}
+
+.careermap-button-primary:focus-visible {
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.12),
+    0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.careermap-button-secondary {
+  border-color: var(--cm-border-strong);
+  background: var(--cm-surface-elevated);
+  color: var(--cm-text);
+}
+
+.careermap-button-secondary:hover:not(:disabled) {
+  border-color: #94a3b8;
+  background: var(--cm-surface);
+}
+
+.careermap-button-secondary:focus-visible {
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.careermap-button-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--cm-text-secondary);
+}
+
+.careermap-button-ghost:hover:not(:disabled) {
+  background: var(--cm-surface);
+  color: var(--cm-text);
+}
+
+/* =========================================================
+   Form Foundation
+   ========================================================= */
+
+.careermap-input,
+.careermap-textarea,
+.careermap-select {
+  width: 100%;
+
+  border: 1px solid var(--cm-border-strong);
+  border-radius: var(--cm-radius-md);
+
+  background: var(--cm-surface-elevated);
+  color: var(--cm-text);
+
+  outline: none;
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.careermap-input {
+  min-height: 46px;
+  padding: 10px 13px;
+
+  font-size: 14px;
+}
+
+.careermap-textarea {
+  min-height: 150px;
+  padding: 12px 13px;
+
+  resize: vertical;
+
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.careermap-select {
+  min-height: 46px;
+  padding: 10px 13px;
+
+  font-size: 14px;
+}
+
+.careermap-input:hover,
+.careermap-textarea:hover,
+.careermap-select:hover {
+  border-color: #94a3b8;
+}
+
+.careermap-input::placeholder,
+.careermap-textarea::placeholder {
+  color: var(--cm-text-subtle);
+}
+
+.careermap-input:focus,
+.careermap-textarea:focus,
+.careermap-select:focus {
+  border-color: var(--cm-blue);
+
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.careermap-input:disabled,
+.careermap-textarea:disabled,
+.careermap-select:disabled {
+  background: var(--cm-surface);
+  color: var(--cm-text-muted);
+}
+
+/* =========================================================
+   Labels
+   ========================================================= */
+
+.careermap-label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--cm-text);
+
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.careermap-helper {
+  margin: 6px 0 0;
+
+  color: var(--cm-text-muted);
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   Dividers
+   ========================================================= */
+
+.careermap-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--cm-border);
+}
+
+.careermap-divider-soft {
+  width: 100%;
+  height: 1px;
+  background: var(--cm-border-soft);
+}
+
+/* =========================================================
+   Status Surfaces
+   ========================================================= */
+
+.careermap-status-success {
+  border: 1px solid #a7f3d0;
+  background: var(--cm-success-soft);
+  color: #047857;
+}
+
+.careermap-status-warning {
+  border: 1px solid #fde68a;
+  background: var(--cm-warning-soft);
+  color: #b45309;
+}
+
+.careermap-status-danger {
+  border: 1px solid #fecaca;
+  background: var(--cm-danger-soft);
+  color: #b91c1c;
+}
+
+/* =========================================================
+   Responsive Layout
+   ========================================================= */
+
+@media (min-width: 480px) {
+  .careermap-container {
+    padding-inline: var(--cm-gutter-sm);
+  }
+
+  .careermap-section {
+    padding-block: 60px;
+  }
+}
+
+@media (min-width: 640px) {
+  .careermap-container {
+    padding-inline: var(--cm-gutter-md);
+  }
+
+  .careermap-section {
+    padding-block: var(--cm-section-sm);
+  }
+
+  .careermap-body {
+    font-size: 15.5px;
+  }
+}
+
+@media (min-width: 768px) {
+  .careermap-container {
+    padding-inline: var(--cm-gutter-lg);
+  }
+
+  .careermap-section {
+    padding-block: var(--cm-section-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .careermap-container {
+    padding-inline: var(--cm-gutter-xl);
+  }
+
+  .careermap-section {
+    padding-block: var(--cm-section-lg);
+  }
+
+  .careermap-body {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .careermap-container {
+    padding-inline: var(--cm-gutter-xl);
+  }
+
+  .careermap-section {
+    padding-block: var(--cm-section-xl);
+  }
+}
+
+@media (min-width: 1536px) {
+  .careermap-container {
+    padding-inline: var(--cm-gutter-2xl);
+  }
+
+  .careermap-section {
+    padding-block: var(--cm-section-2xl);
+  }
+}
+
+/* =========================================================
+   Mobile Refinements
+   ========================================================= */
+
+@media (max-width: 639px) {
+  .careermap-button {
+    min-height: 48px;
+  }
+
+  .careermap-input,
+  .careermap-select {
+    min-height: 48px;
+  }
+
+  .careermap-textarea {
+    min-height: 170px;
+  }
+}
+
+/* =========================================================
+   Reduced Motion
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
