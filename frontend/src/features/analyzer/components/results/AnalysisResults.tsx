@@ -23,6 +23,7 @@ import MissingSkills from "@/features/analyzer/components/results/MissingSkills"
 import ResumeStrengths from "@/features/analyzer/components/results/ResumeStrengths";
 import SkillsMatch from "@/features/analyzer/components/results/SkillsMatch";
 
+import PDFExportButton from "@/components/shared/PDFExportButton";
 import type { CareerAnalysis } from "@/features/analyzer/types/careerAnalysis";
 
 interface AnalysisResultsProps {
@@ -712,7 +713,7 @@ export default function AnalysisResults({
                 </p>
               </div>
 
-              <div className="flex shrink-0 items-center gap-2 self-start lg:self-auto">
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 self-start lg:self-auto">
                 {resumeFile && (
                   <div className="hidden max-w-[260px] items-center gap-2.5 rounded-2xl border border-slate-200 bg-white/90 px-3 py-2 shadow-[0_5px_18px_rgba(15,23,42,0.04)] sm:flex">
                     <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500">
@@ -735,6 +736,13 @@ export default function AnalysisResults({
                     </div>
                   </div>
                 )}
+
+                <PDFExportButton
+                  endpoint="/api/pdf/analyzer"
+                  payload={{ analysis }}
+                  filename="careermap-analyzer-report.pdf"
+                  label="Export Analysis as PDF"
+                />
               </div>
             </div>
           </motion.header>

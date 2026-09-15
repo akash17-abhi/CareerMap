@@ -1,4 +1,7 @@
-import type { RoadmapProfile } from "./roadmap";
+import type {
+  GeneratedRoadmap,
+  RoadmapProfile,
+} from "./roadmap";
 
 export interface ResumeMetadata {
   name: string;
@@ -17,16 +20,25 @@ export interface AnalyzerContext {
   role: string;
 
   matchScore: number;
+
   skillsMatchScore: number;
+
   keywordMatchScore: number;
+
   experienceMatchScore: number;
+
   educationMatchScore: number;
+
   semanticSimilarityScore: number;
+
   atsScore: number;
 
   skills: unknown[];
+
   missingSkills: unknown[];
+
   strengths: unknown[];
+
   improvements: unknown[];
 }
 
@@ -45,7 +57,7 @@ export interface GenerateRoadmapRequest {
 }
 
 export interface GenerateRoadmapResponse {
-  roadmap: Record<string, unknown>;
+  roadmap: GeneratedRoadmap;
 
   detail?: string;
 }

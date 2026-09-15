@@ -6,6 +6,7 @@ import ResumeRoleScreen from "@/features/roadmap/components/setup/ResumeRoleScre
 import ManualProfileScreen from "@/features/roadmap/components/setup/ManualProfileScreen";
 import ManualReviewScreen from "@/features/roadmap/components/setup/ManualReviewScreen";
 import RoadmapResultsScreen from "@/features/roadmap/components/results/RoadmapResultsScreen";
+
 import type { useRoadmapSetup } from "@/features/roadmap/hooks/useRoadmapSetup";
 
 type RoadmapFlowProps = ReturnType<typeof useRoadmapSetup>;
@@ -61,6 +62,12 @@ function RoadmapFlow(props: RoadmapFlowProps) {
     startOver,
   } = props;
 
+  /*
+   * Results state
+   *
+   * Once the roadmap has been generated, the setup flow
+   * is replaced by the results screen.
+   */
   if (generatedRoadmap) {
     return (
       <RoadmapResultsScreen
@@ -73,6 +80,9 @@ function RoadmapFlow(props: RoadmapFlowProps) {
     );
   }
 
+  /*
+   * Initial entry
+   */
   if (setupMode === "entry") {
     return (
       <EntryScreen
@@ -82,6 +92,9 @@ function RoadmapFlow(props: RoadmapFlowProps) {
     );
   }
 
+  /*
+   * Resume upload
+   */
   if (setupMode === "cv-upload") {
     return (
       <ResumeUploadScreen
@@ -96,6 +109,9 @@ function RoadmapFlow(props: RoadmapFlowProps) {
     );
   }
 
+  /*
+   * Resume role selection
+   */
   if (setupMode === "cv-role") {
     return (
       <ResumeRoleScreen
@@ -104,7 +120,9 @@ function RoadmapFlow(props: RoadmapFlowProps) {
         role={profile.preferredRole}
         customRole={customRole}
         suggestions={roleSuggestions}
-        onRoleChange={(value) => updateProfile("preferredRole", value)}
+        onRoleChange={(value) =>
+          updateProfile("preferredRole", value)
+        }
         onSuggestion={(suggestion) => {
           setCustomRole("");
           selectRoleSuggestion(suggestion);
@@ -112,13 +130,20 @@ function RoadmapFlow(props: RoadmapFlowProps) {
         onCustomRoleChange={setCustomRole}
         onBack={goToCvUpload}
         onGenerate={generateFromResume}
-        isGenerating={generationState === "loading"}
+        isGenerating={
+          generationState === "loading"
+        }
         generationError={generationError}
-        generationSuccess={generationState === "success"}
+        generationSuccess={
+          generationState === "success"
+        }
       />
     );
   }
 
+  /*
+   * Manual profile — 10-step flow
+   */
   if (setupMode === "manual-profile") {
     return (
       <ManualProfileScreen
@@ -127,7 +152,9 @@ function RoadmapFlow(props: RoadmapFlowProps) {
         totalSteps={totalProfileSteps}
         valid={manualStepValid}
         customSkill={customSkill}
-        customEducationField={customEducationField}
+        customEducationField={
+          customEducationField
+        }
         projectDraft={projectDraft}
         onBack={previousProfileStep}
         onNext={nextProfileStep}
@@ -137,15 +164,22 @@ function RoadmapFlow(props: RoadmapFlowProps) {
         setCustomSkill={setCustomSkill}
         updateSkillLevel={updateSkillLevel}
         toggleExperienceType={toggleExperienceType}
-        setCustomEducationField={setCustomEducationField}
+        setCustomEducationField={
+          setCustomEducationField
+        }
         addProject={addProject}
         setProjectDraft={setProjectDraft}
         removeProject={removeProject}
-        toggleLearningPreference={toggleLearningPreference}
+        toggleLearningPreference={
+          toggleLearningPreference
+        }
       />
     );
   }
 
+  /*
+   * Manual profile review
+   */
   if (setupMode === "manual-review") {
     return (
       <ManualReviewScreen
@@ -153,13 +187,20 @@ function RoadmapFlow(props: RoadmapFlowProps) {
         onBack={backFromManualReview}
         onModify={modifyManualReview}
         onGenerate={generateFromManualReview}
-        isGenerating={generationState === "loading"}
+        isGenerating={
+          generationState === "loading"
+        }
         generationError={generationError}
-        generationSuccess={generationState === "success"}
+        generationSuccess={
+          generationState === "success"
+        }
       />
     );
   }
 
+  /*
+   * Defensive fallback
+   */
   return <Navigate to="/roadmap" replace />;
 }
 
