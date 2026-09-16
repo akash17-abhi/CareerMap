@@ -200,7 +200,8 @@ export default function ManualProfileScreen({
               <button
                 type="button"
                 onClick={onBack}
-                className="group inline-flex min-h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-[11px] font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-slate-300 hover:text-slate-950 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10 sm:min-h-10 sm:rounded-xl sm:px-3.5 sm:text-xs"
+                aria-label="Go back"
+                className="group inline-flex min-h-11 touch-manipulation items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-[11px] font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-slate-300 hover:text-slate-950 hover:shadow-md active:scale-[0.995] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10 sm:min-h-10 sm:rounded-xl sm:px-3.5 sm:text-xs"
               >
                 <ArrowLeft
                   className="h-3.5 w-3.5 text-slate-400 transition-transform duration-200 group-hover:-translate-x-0.5"
@@ -222,7 +223,10 @@ export default function ManualProfileScreen({
             </div>
 
             {/* Progress */}
-            <div className="mt-4">
+            <div
+              className="mt-4"
+              aria-label="Profile progress"
+            >
               <div
                 className="h-1.5 overflow-hidden rounded-full bg-slate-100"
                 aria-label={`Profile completion: ${Math.round(progress)}%`}
@@ -234,7 +238,7 @@ export default function ManualProfileScreen({
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600"
                   animate={{
-                    width: `${Math.max(progress, 7)}%`,
+                    width: `${progress}%`,
                   }}
                   transition={{
                     duration: 0.3,
@@ -261,6 +265,7 @@ export default function ManualProfileScreen({
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={safeStep}
+                    className="motion-reduce:!transform-none"
                     initial={{
                       opacity: 0,
                       x: 10,
@@ -278,7 +283,9 @@ export default function ManualProfileScreen({
                       ease: "easeOut",
                     }}
                   >
-                    <div className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-[0_14px_45px_rgba(15,23,42,0.055)] sm:rounded-[1.75rem] sm:shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
+                    <div
+                      aria-labelledby="roadmap-profile-question"
+                      className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-[0_14px_45px_rgba(15,23,42,0.055)] sm:rounded-[1.75rem] sm:shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
                       {/* Question header */}
                       <div className="px-4 pb-5 pt-5 sm:px-7 sm:pb-6 sm:pt-7 lg:px-8">
                         <div className="flex items-start gap-3">
@@ -301,7 +308,7 @@ export default function ManualProfileScreen({
                           </div>
                         </div>
 
-                        <h1 className="mt-5 max-w-3xl text-[1.75rem] font-bold leading-[1.08] tracking-[-0.04em] text-slate-950 sm:mt-6 sm:text-[2.35rem] lg:text-[2.5rem]">
+                        <h1 id="roadmap-profile-question" className="mt-5 max-w-3xl text-[1.75rem] font-bold leading-[1.08] tracking-[-0.04em] text-slate-950 sm:mt-6 sm:text-[2.35rem] lg:text-[2.5rem]">
                           {currentCopy[1]}
                         </h1>
 
@@ -373,7 +380,7 @@ export default function ManualProfileScreen({
                             type="button"
                             disabled={!valid}
                             onClick={onNext}
-                            className="order-1 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 text-[11px] font-bold text-white shadow-[0_8px_22px_rgba(79,70,229,0.16)] outline-none transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-[0_12px_28px_rgba(79,70,229,0.2)] disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/20 sm:order-2 sm:w-auto sm:text-xs"
+                            className="order-1 inline-flex min-h-11 w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 text-[11px] font-bold text-white shadow-[0_8px_22px_rgba(79,70,229,0.16)] outline-none transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-[0_12px_28px_rgba(79,70,229,0.2)] disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/20 sm:order-2 sm:w-auto sm:text-xs"
                           >
                             {isLastStep
                               ? "Review My Profile"
@@ -385,6 +392,12 @@ export default function ManualProfileScreen({
                             />
                           </button>
                         </div>
+
+                        {!valid ? (
+                          <p className="mt-2 text-right text-[9px] font-medium text-slate-400 sm:text-[10px]">
+                            Complete the required selection above to continue.
+                          </p>
+                        ) : null}
                       </div>
                     </div>
                   </motion.div>
@@ -392,7 +405,7 @@ export default function ManualProfileScreen({
               </div>
 
               {/* Desktop progress panel */}
-              <aside className="hidden lg:block lg:sticky lg:top-24">
+              <aside aria-label="Profile setup progress" className="hidden lg:block lg:sticky lg:top-24">
                 <ProfileProgressPanel
                   step={safeStep}
                   stepCopy={

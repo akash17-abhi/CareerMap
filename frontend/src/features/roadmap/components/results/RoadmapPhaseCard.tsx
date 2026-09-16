@@ -29,6 +29,7 @@ export default function RoadmapPhaseCard({
 }: RoadmapPhaseCardProps) {
   return (
     <motion.article
+      aria-labelledby={`roadmap-phase-${phase.phase}-title`}
       initial={{
         opacity: 0,
         y: 10,
@@ -42,10 +43,10 @@ export default function RoadmapPhaseCard({
         delay: Math.min(index * 0.05, 0.25),
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+      className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm motion-reduce:!transform-none motion-reduce:transition-none"
     >
       {/* Phase header */}
-      <header className="border-b border-slate-200 bg-gradient-to-r from-slate-50 via-white to-indigo-50/40 p-5 sm:p-6">
+      <header className="border-b border-slate-200 bg-gradient-to-r from-slate-50 via-white to-indigo-50/40 p-4 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex min-w-0 items-start gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-xs font-black text-white">
@@ -57,14 +58,17 @@ export default function RoadmapPhaseCard({
                 Phase {phase.phase}
               </p>
 
-              <h3 className="mt-1 break-words text-lg font-black tracking-tight text-slate-950 sm:text-xl">
+              <h3
+                id={`roadmap-phase-${phase.phase}-title`}
+                className="mt-1 break-words text-lg font-black tracking-tight text-slate-950 sm:text-xl"
+              >
                 {phase.title}
               </h3>
             </div>
           </div>
 
-          <span className="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600">
-            <Clock3 className="h-3.5 w-3.5" />
+          <span className="inline-flex w-fit max-w-full shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600">
+            <Clock3 aria-hidden="true" className="h-3.5 w-3.5" />
             {phase.duration}
           </span>
         </div>
@@ -90,7 +94,7 @@ export default function RoadmapPhaseCard({
       </header>
 
       {/* Phase content */}
-      <div className="space-y-4 p-4 sm:space-y-5 sm:p-6">
+      <div className="space-y-3.5 p-4 sm:space-y-5 sm:p-6">
         {/* Learn */}
         <StageCard
           number="01"
@@ -112,7 +116,7 @@ export default function RoadmapPhaseCard({
                       key={`${topicIndex}-${topic}`}
                       className="flex items-start gap-2"
                     >
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400" />
+                      <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400" />
 
                       <p className="text-xs leading-5 text-slate-600">
                         {topic}
@@ -150,7 +154,7 @@ export default function RoadmapPhaseCard({
                       key={`${activityIndex}-${activity}`}
                       className="flex items-start gap-2"
                     >
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
+                      <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
 
                       <p className="text-xs leading-5 text-slate-600">
                         {activity}
@@ -165,7 +169,7 @@ export default function RoadmapPhaseCard({
           {phase.practice.success_criteria.length > 0 ? (
             <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50/50 p-3.5">
               <div className="flex items-center gap-2">
-                <ListChecks className="h-3.5 w-3.5 text-blue-600" />
+                <ListChecks aria-hidden="true" className="h-3.5 w-3.5 text-blue-600" />
 
                 <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-blue-600">
                   Success criteria
@@ -196,7 +200,7 @@ export default function RoadmapPhaseCard({
           tone="violet"
           objective={phase.build.objective}
         >
-          <div className="rounded-2xl border border-violet-100 bg-violet-50/60 p-4">
+          <div className="min-w-0 rounded-2xl border border-violet-100 bg-violet-50/60 p-4">
             <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-violet-600">
               Practical project
             </p>
@@ -219,7 +223,7 @@ export default function RoadmapPhaseCard({
                       key={`${requirementIndex}-${requirement}`}
                       className="flex items-start gap-2"
                     >
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
+                      <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
 
                       <p className="text-xs leading-5 text-slate-600">
                         {requirement}
@@ -278,7 +282,7 @@ export default function RoadmapPhaseCard({
                       key={`${evidenceIndex}-${evidence}`}
                       className="flex items-start gap-2"
                     >
-                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                      <CheckCircle2 aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
 
                       <p className="text-xs leading-5 text-slate-600">
                         {evidence}
@@ -304,16 +308,22 @@ export default function RoadmapPhaseCard({
         </StageCard>
 
         {/* Milestones */}
-        <section className="border-t border-slate-100 pt-5">
+        <section
+          aria-labelledby={`roadmap-phase-${phase.phase}-milestones`}
+          className="border-t border-slate-100 pt-5"
+        >
           <div className="flex items-center gap-2">
-            <ListChecks className="h-4 w-4 text-slate-500" />
+            <ListChecks aria-hidden="true" className="h-4 w-4 text-slate-500" />
 
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
                 Checkpoints
               </p>
 
-              <h4 className="mt-0.5 text-sm font-black text-slate-900">
+              <h4
+                id={`roadmap-phase-${phase.phase}-milestones`}
+                className="mt-0.5 text-sm font-black text-slate-900"
+              >
                 Milestones
               </h4>
             </div>
@@ -349,7 +359,7 @@ export default function RoadmapPhaseCard({
                                   key={`${taskIndex}-${task}`}
                                   className="flex items-start gap-2"
                                 >
-                                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-300" />
+                                  <span aria-hidden="true" className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-300" />
 
                                   <p className="text-[11px] leading-4.5 text-slate-500">
                                     {task}
@@ -375,19 +385,22 @@ export default function RoadmapPhaseCard({
         </section>
 
         {/* Completion signal */}
-        <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
+        <section
+          aria-label="Phase completion signal"
+          className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4"
+        >
           <div className="flex items-center gap-2 text-emerald-700">
-            <CheckCircle2 className="h-4 w-4" />
+            <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
 
             <p className="text-[10px] font-bold uppercase tracking-[0.16em]">
               Completion signal
             </p>
           </div>
 
-          <p className="mt-2 text-sm font-semibold leading-5 text-emerald-950">
+          <p className="mt-2 break-words text-sm font-semibold leading-5 text-emerald-950">
             {phase.completion_signal}
           </p>
-        </div>
+        </section>
       </div>
     </motion.article>
   );
@@ -416,6 +429,7 @@ function StageCard({
 
   return (
     <section
+      aria-labelledby={`roadmap-stage-${number}-${label.toLowerCase()}`}
       className={[
         "rounded-2xl border p-4 sm:p-5",
         styles.border,
@@ -429,7 +443,7 @@ function StageCard({
             styles.iconBackground,
           ].join(" ")}
         >
-          {icon}
+          <span aria-hidden="true">{icon}</span>
         </span>
 
         <div className="min-w-0 flex-1">
@@ -444,6 +458,7 @@ function StageCard({
             </span>
 
             <p
+              id={`roadmap-stage-${number}-${label.toLowerCase()}`}
               className={[
                 "text-[10px] font-bold uppercase tracking-[0.16em]",
                 styles.text,

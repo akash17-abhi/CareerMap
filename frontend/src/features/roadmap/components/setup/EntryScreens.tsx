@@ -28,7 +28,7 @@ function EntryScreen({
     location.state?.from === "analyzer";
 
   return (
-    <main className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-white">
+    <main className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-white px-0">
       <BackgroundGlow />
 
       {/* Soft ambient background */}
@@ -46,7 +46,7 @@ function EntryScreen({
       <section className="relative">
         <div className="careermap-container">
           <div
-            className="mx-auto max-w-5xl"
+            className="mx-auto max-w-5xl motion-reduce:animate-none"
             style={{
               animation:
                 "careermap-fade-up 0.45s ease-out both",
@@ -54,7 +54,7 @@ function EntryScreen({
           >
             {/* Back to Analyzer */}
             {cameFromAnalyzer && (
-              <div className="mb-8 flex justify-start">
+              <div className="mb-5 flex justify-start sm:mb-8">
                 <button
                   type="button"
                   onClick={() =>
@@ -64,7 +64,8 @@ function EntryScreen({
                       },
                     })
                   }
-                  className="group inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-slate-300 hover:text-slate-950 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10"
+                  aria-label="Return to Resume and JD Analyzer"
+                  className="group inline-flex min-h-11 touch-manipulation items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-slate-300 hover:text-slate-950 hover:shadow-md active:scale-[0.995] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10 sm:min-h-10"
                 >
                   <FileText
                     className="h-4 w-4 text-slate-400 transition-colors group-hover:text-indigo-500"
@@ -92,13 +93,13 @@ function EntryScreen({
                 Personalized career roadmap
               </Badge>
 
-              <h1 className="mx-auto mt-6 max-w-3xl text-[2.35rem] font-bold leading-[1.05] tracking-[-0.045em] text-slate-950 sm:text-[3.15rem] lg:text-[3.4rem]">
+              <h1 className="mx-auto mt-5 max-w-3xl text-[2.15rem] font-bold leading-[1.06] tracking-[-0.045em] text-slate-950 sm:mt-6 sm:text-[3.15rem] lg:text-[3.4rem]">
                 Build a career path
                 <br className="hidden sm:block" />{" "}
                 that fits where you are.
               </h1>
 
-              <p className="mx-auto mt-5 max-w-2xl text-[14px] leading-6 text-slate-500 sm:text-[15px] sm:leading-7">
+              <p className="mx-auto mt-4 max-w-2xl text-[13px] leading-5.5 text-slate-500 sm:mt-5 sm:text-[15px] sm:leading-7">
                 Start with your resume or tell us about your
                 current skills. CareerMap will create a
                 personalized path for what to learn, build,
@@ -107,7 +108,10 @@ function EntryScreen({
             </header>
 
             {/* Setup options */}
-            <div className="mx-auto mt-10 grid max-w-4xl gap-5 md:grid-cols-2">
+            <div
+              aria-label="Choose how to start your career roadmap"
+              className="mx-auto mt-8 grid max-w-4xl gap-4 sm:mt-10 sm:gap-5 md:grid-cols-2"
+            >
               <EntryCard
                 icon={
                   <Upload
@@ -140,7 +144,7 @@ function EntryScreen({
 
             {/* Trust / privacy */}
             <div className="mx-auto mt-7 max-w-4xl">
-              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/55 px-5 py-4 sm:px-6">
+              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/55 px-4 py-4 sm:px-6">
                 <div className="flex items-start gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-emerald-600 shadow-sm ring-1 ring-emerald-100">
                     <ShieldCheck
@@ -162,7 +166,7 @@ function EntryScreen({
                       </span>
                     </div>
 
-                    <p className="mt-1 text-[11px] leading-5 text-emerald-800/75 sm:text-xs sm:leading-5.5">
+                    <p className="mt-1 text-[10px] leading-4.5 text-emerald-800/75 sm:text-xs sm:leading-5.5">
                       Your resume and roadmap profile stay
                       temporary during this session. CareerMap
                       does not create a permanent account profile
@@ -180,7 +184,7 @@ function EntryScreen({
 
             {/* Small process hint */}
             <div className="mx-auto mt-7 flex max-w-xl items-center justify-center gap-2 text-center text-[10px] font-medium text-slate-400 sm:text-[11px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
               <span>
                 Your answers are used only to personalize your
                 roadmap.

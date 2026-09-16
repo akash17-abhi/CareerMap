@@ -62,6 +62,9 @@ function RoadmapFlow(props: RoadmapFlowProps) {
     startOver,
   } = props;
 
+  const isGenerating = generationState === "loading";
+  const generationSucceeded = generationState === "success";
+
   /*
    * Results state
    *
@@ -130,13 +133,9 @@ function RoadmapFlow(props: RoadmapFlowProps) {
         onCustomRoleChange={setCustomRole}
         onBack={goToCvUpload}
         onGenerate={generateFromResume}
-        isGenerating={
-          generationState === "loading"
-        }
+        isGenerating={isGenerating}
         generationError={generationError}
-        generationSuccess={
-          generationState === "success"
-        }
+        generationSuccess={generationSucceeded}
       />
     );
   }
@@ -179,6 +178,9 @@ function RoadmapFlow(props: RoadmapFlowProps) {
 
   /*
    * Manual profile review
+   *
+   * The review screen owns only presentation and actions;
+   * generation state remains controlled by the setup hook.
    */
   if (setupMode === "manual-review") {
     return (
@@ -187,19 +189,18 @@ function RoadmapFlow(props: RoadmapFlowProps) {
         onBack={backFromManualReview}
         onModify={modifyManualReview}
         onGenerate={generateFromManualReview}
-        isGenerating={
-          generationState === "loading"
-        }
+        isGenerating={isGenerating}
         generationError={generationError}
-        generationSuccess={
-          generationState === "success"
-        }
+        generationSuccess={generationSucceeded}
       />
     );
   }
 
   /*
    * Defensive fallback
+   *
+   * Keep invalid setup modes recoverable without exposing
+   * an incomplete or stale setup screen.
    */
   return <Navigate to="/roadmap" replace />;
 }

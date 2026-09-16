@@ -102,14 +102,15 @@ export default function ManualReviewScreen({
               duration: 0.35,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="mx-auto w-full max-w-6xl"
+            className="mx-auto w-full max-w-6xl motion-reduce:animate-none"
           >
             {/* Top navigation */}
             <div className="flex items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={onBack}
-                className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-[10px] font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:-translate-y-px hover:border-slate-300 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10 sm:px-4"
+                aria-label="Go back to profile setup"
+                className="inline-flex min-h-11 touch-manipulation items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-[10px] font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:-translate-y-px hover:border-slate-300 hover:text-slate-900 active:scale-[0.995] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10 sm:min-h-10 sm:px-4"
               >
                 <ArrowLeft
                   className="h-3.5 w-3.5"
@@ -118,7 +119,11 @@ export default function ManualReviewScreen({
                 Back
               </button>
 
-              <div className="inline-flex min-h-9 items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 text-[8px] font-bold uppercase tracking-[0.12em] text-emerald-700 sm:px-3.5 sm:text-[9px]">
+              <div
+                role="status"
+                aria-label="Profile complete"
+                className="inline-flex min-h-9 items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 text-[8px] font-bold uppercase tracking-[0.12em] text-emerald-700 sm:px-3.5 sm:text-[9px]"
+              >
                 <CheckCircle2
                   className="h-3.5 w-3.5 text-emerald-600"
                   strokeWidth={1.9}
@@ -141,7 +146,7 @@ export default function ManualReviewScreen({
                   className="pointer-events-none absolute bottom-[-5rem] left-[32%] h-36 w-36 rounded-full bg-blue-100/30 blur-3xl sm:h-44 sm:w-44"
                 />
 
-                <div className="relative px-4 py-6 sm:px-7 sm:py-8 lg:px-9">
+                <div className="relative px-4 py-5 sm:px-7 sm:py-8 lg:px-9">
                   <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                     <div className="min-w-0 max-w-3xl">
                       <div className="inline-flex min-h-8 items-center gap-2 rounded-full border border-indigo-100 bg-white/85 px-3 text-[8px] font-bold uppercase tracking-[0.13em] text-indigo-700 shadow-sm sm:min-h-9 sm:px-3.5 sm:text-[9px]">
@@ -152,7 +157,7 @@ export default function ManualReviewScreen({
                         Career profile
                       </div>
 
-                      <h1 className="mt-4 break-words text-[1.8rem] font-bold leading-[1.02] tracking-[-0.045em] text-slate-950 sm:text-[2.55rem] lg:text-[2.9rem]">
+                      <h1 className="mt-4 break-words text-[1.7rem] font-bold leading-[1.04] tracking-[-0.045em] text-slate-950 sm:text-[2.55rem] lg:text-[2.9rem]">
                         {profile.preferredRole ||
                           "Your career profile"}
                       </h1>
@@ -203,7 +208,10 @@ export default function ManualReviewScreen({
               </header>
 
               {/* Mobile jump navigation */}
-              <div className="border-b border-slate-200 bg-white px-4 py-3.5 sm:hidden">
+              <nav
+                aria-label="Review sections"
+                className="border-b border-slate-200 bg-white px-4 py-3.5 sm:hidden"
+              >
                 <p className="mb-2 text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">
                   Jump to section
                 </p>
@@ -222,7 +230,7 @@ export default function ManualReviewScreen({
                     </button>
                   ))}
                 </div>
-              </div>
+              </nav>
 
               {/* Review content */}
               <div className="px-4 py-5 sm:px-7 sm:py-7 lg:px-9 lg:py-8">
@@ -252,7 +260,7 @@ export default function ManualReviewScreen({
                 {/* Career */}
                 <div
                   id="career-review"
-                  className="scroll-mt-20"
+                  className="scroll-mt-24"
                 >
                   <ReviewSectionLabel
                     eyebrow="01"
@@ -294,7 +302,7 @@ export default function ManualReviewScreen({
                 {/* Education */}
                 <div
                   id="education-review"
-                  className="scroll-mt-20"
+                  className="scroll-mt-24"
                 >
                   <ReviewSectionLabel
                     eyebrow="02"
@@ -332,7 +340,7 @@ export default function ManualReviewScreen({
                 {/* Experience */}
                 <div
                   id="experience-review"
-                  className="scroll-mt-20"
+                  className="scroll-mt-24"
                 >
                   <ReviewSectionLabel
                     eyebrow="03"
@@ -385,7 +393,7 @@ export default function ManualReviewScreen({
                 {/* Skills */}
                 <div
                   id="skills-review"
-                  className="scroll-mt-20"
+                  className="scroll-mt-24"
                 >
                   <ReviewSectionLabel
                     eyebrow="04"
@@ -407,7 +415,7 @@ export default function ManualReviewScreen({
                           (skill: RoadmapSkill) => (
                             <div
                               key={skill.name}
-                              className="rounded-xl border border-slate-200 bg-white px-2.5 py-2 shadow-[0_1px_4px_rgba(15,23,42,0.04)]"
+                              className="min-w-0 max-w-full rounded-xl border border-slate-200 bg-white px-2.5 py-2 shadow-[0_1px_4px_rgba(15,23,42,0.04)]"
                             >
                               <p className="text-[9px] font-bold text-slate-800">
                                 {skill.name}
@@ -431,7 +439,7 @@ export default function ManualReviewScreen({
                 {/* Projects */}
                 <div
                   id="projects-review"
-                  className="scroll-mt-20"
+                  className="scroll-mt-24"
                 >
                   <ReviewSectionLabel
                     eyebrow="05"
@@ -475,7 +483,7 @@ export default function ManualReviewScreen({
                                       {project.name}
                                     </p>
 
-                                    <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[8px] font-semibold capitalize text-slate-500">
+                                    <span className="max-w-full rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[8px] font-semibold capitalize text-slate-500">
                                       {project.status.replace(
                                         "-",
                                         " ",
@@ -514,7 +522,7 @@ export default function ManualReviewScreen({
                 {/* Learning */}
                 <div
                   id="learning-review"
-                  className="scroll-mt-20"
+                  className="scroll-mt-24"
                 >
                   <ReviewSectionLabel
                     eyebrow="06"
@@ -571,7 +579,7 @@ export default function ManualReviewScreen({
                 </div>
 
                 {/* Desktop readiness card */}
-                <div className="mt-7 hidden rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/75 via-white to-violet-50/70 p-4 sm:block sm:p-5">
+                <div className="mt-7 hidden rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/75 via-white to-violet-50/70 p-4 motion-reduce:transition-none sm:block sm:p-5">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
                       <Sparkles
@@ -601,7 +609,11 @@ export default function ManualReviewScreen({
 
             {/* Generation feedback */}
             {generationError ? (
-              <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-3.5 py-3 sm:px-4">
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-3.5 py-3 sm:px-4"
+              >
                 <div className="flex items-start gap-2.5">
                   <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white text-rose-600 ring-1 ring-rose-100">
                     <span className="text-[10px] font-bold">
@@ -609,10 +621,7 @@ export default function ManualReviewScreen({
                     </span>
                   </span>
 
-                  <p
-                    role="alert"
-                    className="text-[9px] font-semibold leading-4 text-rose-700 sm:text-[10px]"
-                  >
+                  <p className="break-words text-[9px] font-semibold leading-4 text-rose-700 sm:text-[10px]">
                     {generationError}
                   </p>
                 </div>
@@ -620,7 +629,11 @@ export default function ManualReviewScreen({
             ) : null}
 
             {generationSuccess && !generationError ? (
-              <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-3.5 py-3 sm:px-4">
+              <div
+                role="status"
+                aria-live="polite"
+                className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-3.5 py-3 sm:px-4"
+              >
                 <div className="flex items-start gap-2.5">
                   <CheckCircle2
                     className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600"
@@ -636,7 +649,7 @@ export default function ManualReviewScreen({
             ) : null}
 
             {/* Bottom action bar */}
-            <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 py-3 shadow-[0_-10px_30px_rgba(15,23,42,0.07)] backdrop-blur-xl sm:relative sm:mt-5 sm:rounded-2xl sm:border sm:bg-white sm:px-4 sm:py-3.5 sm:shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:backdrop-blur-none">
+            <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-10px_30px_rgba(15,23,42,0.07)] backdrop-blur-xl sm:relative sm:mt-5 sm:rounded-2xl sm:border sm:bg-white sm:px-4 sm:py-3.5 sm:shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:backdrop-blur-none">
               <div className="mx-auto flex w-full max-w-6xl items-center gap-2">
                 <div className="hidden min-w-0 flex-1 sm:block">
                   <p className="text-[10px] font-bold text-slate-800">

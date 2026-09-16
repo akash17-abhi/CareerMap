@@ -31,15 +31,18 @@ export default function AnalysisProcessing({
     (step) => step.status === "active",
   ).length;
 
-  const progress = Math.min(
-    96,
-    Math.max(
-      8,
-      ((completedCount + activeCount * 0.5) /
-        steps.length) *
-        100,
-    ),
-  );
+  const progress =
+    steps.length > 0
+      ? Math.min(
+          96,
+          Math.max(
+            8,
+            ((completedCount + activeCount * 0.5) /
+              steps.length) *
+              100,
+          ),
+        )
+      : 0;
 
   const progressLabel = `Analysis ${Math.round(progress)} percent complete`;
 
@@ -48,12 +51,11 @@ export default function AnalysisProcessing({
       className="
         relative min-w-0 overflow-hidden
         bg-white
-        py-10
+        py-8
         sm:py-14
         lg:py-16
       "
       aria-labelledby="analysis-processing-title"
-      aria-live="polite"
     >
       {/* Background accents */}
       <div
@@ -99,8 +101,8 @@ export default function AnalysisProcessing({
             ease: [0.22, 1, 0.36, 1],
           }}
           className="
-            mx-auto w-full
-            max-w-xl
+            mx-auto w-full max-w-xl
+            motion-reduce:animate-none
           "
         >
           {/* Header */}
@@ -127,6 +129,7 @@ export default function AnalysisProcessing({
                   repeat: Infinity,
                   ease: "linear",
                 }}
+                className="motion-reduce:animate-none"
               >
                 <FileSearch
                   className="h-5 w-5"
@@ -172,7 +175,7 @@ export default function AnalysisProcessing({
           {/* Progress card */}
           <div
             className="
-              careermap-card mt-6
+              careermap-card mt-5
               p-3.5
               sm:mt-8 sm:p-4.5
             "
@@ -228,169 +231,184 @@ export default function AnalysisProcessing({
             </div>
 
             {/* Steps */}
-            <div className="mt-3">
-              {steps.map((step, index) => {
-                const isCompleted =
-                  step.status === "completed";
+            <ol
+              className="mt-3"
+              aria-label="Analysis steps"
+            >
+              {steps.length > 0 ? (
+                steps.map((step, index) => {
+                  const isCompleted =
+                    step.status === "completed";
 
-                const isActive =
-                  step.status === "active";
+                  const isActive =
+                    step.status === "active";
 
-                const isLast =
-                  index === steps.length - 1;
+                  const isLast =
+                    index === steps.length - 1;
 
-                return (
-                  <div
-                    key={step.id}
-                    className="
-                      relative flex
-                      items-center gap-2.5
-                      rounded-lg
-                      px-1.5 py-2.5
-                      sm:gap-3
-                      sm:px-2
-                      sm:py-3
-                    "
-                  >
-                    {/* Connector */}
-                    {!isLast && (
-                      <div
-                        aria-hidden="true"
-                        className="
-                          absolute
-                          left-[15px]
-                          top-[35px]
-                          bottom-[-2px]
-                          w-px
-                          bg-slate-100
-                          sm:left-[18px]
-                          sm:top-[39px]
-                        "
-                      />
-                    )}
-
-                    {/* Status icon */}
-                    <div
-                      className={[
-                        `
-                          relative z-10
-                          flex h-7 w-7 shrink-0
-                          items-center justify-center
-                          rounded-full
-                          border
-                        `,
-                        "sm:h-8 sm:w-8",
-                        isCompleted
-                          ? "border-emerald-100 bg-emerald-50 text-emerald-600"
-                          : isActive
-                            ? "border-blue-100 bg-blue-50 text-blue-600"
-                            : "border-slate-100 bg-slate-50 text-slate-300",
-                      ].join(" ")}
+                  return (
+                    <li
+                      key={step.id}
+                      className="
+                        relative flex
+                        items-center gap-2.5
+                        rounded-lg
+                        px-1.5 py-2.5
+                        sm:gap-3
+                        sm:px-2
+                        sm:py-3
+                      "
                     >
-                      {isCompleted ? (
-                        <Check
-                          className="h-3.5 w-3.5"
-                          strokeWidth={2.2}
+                      {/* Connector */}
+                      {!isLast && (
+                        <div
                           aria-hidden="true"
-                        />
-                      ) : isActive ? (
-                        <motion.span
-                          animate={{
-                            scale: [1, 1.15, 1],
-                            opacity: [0.55, 1, 0.55],
-                          }}
-                          transition={{
-                            duration: 1.6,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          }}
                           className="
-                            h-2 w-2 rounded-full
-                            bg-blue-600
+                            absolute
+                            left-[15px]
+                            top-[35px]
+                            bottom-[-2px]
+                            w-px
+                            bg-slate-100
+                            sm:left-[18px]
+                            sm:top-[39px]
                           "
-                          aria-hidden="true"
-                        />
-                      ) : (
-                        <span
-                          className="
-                            h-1.5 w-1.5
-                            rounded-full
-                            bg-slate-300
-                          "
-                          aria-hidden="true"
                         />
                       )}
-                    </div>
 
-                    {/* Step text */}
-                    <div className="min-w-0 flex-1">
-                      <p
+                      {/* Status icon */}
+                      <div
                         className={[
                           `
-                            text-[11px]
-                            font-medium
-                            leading-4
-                            sm:text-xs
-                            sm:leading-5
+                            relative z-10
+                            flex h-7 w-7 shrink-0
+                            items-center justify-center
+                            rounded-full
+                            border
                           `,
-                          isCompleted || isActive
-                            ? "text-slate-800"
-                            : "text-slate-400",
+                          "sm:h-8 sm:w-8",
+                          isCompleted
+                            ? "border-emerald-100 bg-emerald-50 text-emerald-600"
+                            : isActive
+                              ? "border-blue-100 bg-blue-50 text-blue-600"
+                              : "border-slate-100 bg-slate-50 text-slate-300",
                         ].join(" ")}
+                        aria-hidden="true"
                       >
-                        {step.label}
-                      </p>
+                        {isCompleted ? (
+                          <Check
+                            className="h-3.5 w-3.5"
+                            strokeWidth={2.2}
+                            aria-hidden="true"
+                          />
+                        ) : isActive ? (
+                          <motion.span
+                            animate={{
+                              scale: [1, 1.15, 1],
+                              opacity: [0.55, 1, 0.55],
+                            }}
+                            transition={{
+                              duration: 1.6,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                            }}
+                            className="
+                              h-2 w-2 rounded-full
+                              bg-blue-600
+                              motion-reduce:animate-none
+                            "
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          <span
+                            className="
+                              h-1.5 w-1.5
+                              rounded-full
+                              bg-slate-300
+                            "
+                            aria-hidden="true"
+                          />
+                        )}
+                      </div>
 
-                      {isActive && (
-                        <motion.p
-                          initial={{
-                            opacity: 0,
-                          }}
-                          animate={{
-                            opacity: 1,
-                          }}
-                          transition={{
-                            duration: 0.2,
-                          }}
-                          className="
-                            mt-0.5
-                            text-[9px]
-                            leading-4
-                            text-blue-500
-                            sm:text-[10px]
-                          "
+                      {/* Step text */}
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className={[
+                            `
+                              break-words
+                              text-[11px]
+                              font-medium
+                              leading-4
+                              sm:text-xs
+                              sm:leading-5
+                            `,
+                            isCompleted || isActive
+                              ? "text-slate-800"
+                              : "text-slate-400",
+                          ].join(" ")}
                         >
-                          Working on this step...
-                        </motion.p>
-                      )}
-                    </div>
+                          {step.label}
+                        </p>
 
-                    {/* Status label */}
-                    <span
-                      className={[
-                        `
-                          shrink-0
-                          text-[8px]
-                          font-medium
-                          sm:text-[9px]
-                        `,
-                        isCompleted
-                          ? "text-emerald-600"
+                        {isActive && (
+                          <motion.p
+                            initial={{
+                              opacity: 0,
+                            }}
+                            animate={{
+                              opacity: 1,
+                            }}
+                            transition={{
+                              duration: 0.2,
+                            }}
+                            className="
+                              mt-0.5
+                              text-[9px]
+                              leading-4
+                              text-blue-500
+                              sm:text-[10px]
+                              motion-reduce:transition-none
+                            "
+                            aria-live="polite"
+                          >
+                            Working on this step...
+                          </motion.p>
+                        )}
+                      </div>
+
+                      {/* Status label */}
+                      <span
+                        className={[
+                          `
+                            shrink-0
+                            text-[8px]
+                            font-medium
+                            sm:text-[9px]
+                          `,
+                          isCompleted
+                            ? "text-emerald-600"
+                            : isActive
+                              ? "text-blue-600"
+                              : "text-slate-300",
+                        ].join(" ")}
+                        aria-hidden="true"
+                      >
+                        {isCompleted
+                          ? "Done"
                           : isActive
-                            ? "text-blue-600"
-                            : "text-slate-300",
-                      ].join(" ")}
-                    >
-                      {isCompleted
-                        ? "Done"
-                        : isActive
-                          ? "Working"
-                          : "Waiting"}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+                            ? "Working"
+                            : "Waiting"}
+                      </span>
+                    </li>
+                  );
+                })
+              ) : (
+                <li className="rounded-xl bg-slate-50 px-3 py-3 text-center text-[10px] text-slate-500">
+                  Preparing analysis...
+                </li>
+              )}
+            </ol>
 
             {/* Progress */}
             <div
@@ -403,9 +421,8 @@ export default function AnalysisProcessing({
             >
               <div
                 className="
-                  flex items-center
+                  mb-1.5 flex items-center
                   justify-between gap-3
-                  mb-1.5
                 "
               >
                 <span
@@ -446,7 +463,7 @@ export default function AnalysisProcessing({
               >
                 <motion.div
                   initial={{
-                    width: "8%",
+                    width: "0%",
                   }}
                   animate={{
                     width: `${progress}%`,
@@ -461,6 +478,7 @@ export default function AnalysisProcessing({
                     from-blue-600
                     via-indigo-600
                     to-violet-600
+                    motion-reduce:transition-none
                   "
                 />
               </div>

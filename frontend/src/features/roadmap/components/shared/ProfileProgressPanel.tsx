@@ -86,12 +86,9 @@ export default function ProfileProgressPanel({
             aria-label={`Profile setup ${progressPercentage}% complete`}
           >
             <div
-              className="h-full rounded-full bg-indigo-600 transition-[width] duration-300 ease-out"
+              className="h-full rounded-full bg-indigo-600 transition-[width] duration-300 ease-out motion-reduce:transition-none"
               style={{
-                width: `${Math.max(
-                  progressPercentage,
-                  safeStep > 1 ? 6 : 0,
-                )}%`,
+                width: `${progressPercentage}%`,
               }}
             />
           </div>
@@ -111,21 +108,18 @@ export default function ProfileProgressPanel({
             className="absolute bottom-3 left-[11px] top-3 w-px bg-slate-200"
           />
 
-          <div className="relative space-y-1">
+          <ol className="relative space-y-1" aria-label="Profile setup steps">
             {stepCopy.map(([label], index) => {
               const itemStep = index + 1;
-
-              const completed =
-                itemStep < safeStep;
-
-              const current =
-                itemStep === safeStep;
+              const completed = itemStep < safeStep;
+              const current = itemStep === safeStep;
 
               return (
-                <div
+                <li
                   key={`${itemStep}-${label}`}
+                  aria-current={current ? "step" : undefined}
                   className={[
-                    "relative flex min-h-9 items-center gap-2.5 rounded-lg px-1.5 py-1 transition-colors duration-200",
+                    "relative flex min-h-9 items-center gap-2.5 rounded-lg px-1.5 py-1 transition-colors duration-200 motion-reduce:transition-none",
                     current
                       ? "bg-indigo-50/70"
                       : "bg-transparent",
@@ -133,12 +127,12 @@ export default function ProfileProgressPanel({
                 >
                   <span
                     className={[
-                      "relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[8px] font-bold ring-4 ring-white transition-all duration-200",
+                      "relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[8px] font-bold ring-4 ring-white transition-all duration-200 motion-reduce:transition-none",
                       completed
                         ? "bg-emerald-100 text-emerald-700"
                         : current
                           ? "bg-indigo-600 text-white shadow-sm"
-                          : "bg-white text-slate-400 ring-slate-50 border border-slate-200",
+                          : "border border-slate-200 bg-white text-slate-400 ring-slate-50",
                     ].join(" ")}
                     aria-hidden="true"
                   >
@@ -154,7 +148,7 @@ export default function ProfileProgressPanel({
 
                   <span
                     className={[
-                      "min-w-0 truncate text-[9px] leading-4 transition-colors",
+                      "min-w-0 truncate text-[9px] leading-4 transition-colors duration-200 motion-reduce:transition-none",
                       current
                         ? "font-bold text-slate-900"
                         : completed
@@ -171,10 +165,10 @@ export default function ProfileProgressPanel({
                       aria-hidden="true"
                     />
                   ) : null}
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ol>
         </div>
       </div>
 
@@ -182,7 +176,7 @@ export default function ProfileProgressPanel({
       <div className="border-t border-slate-200 px-4 py-4">
         <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
           <div className="flex items-center justify-between gap-3">
-            <div>
+            <div className="min-w-0">
               <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-slate-400">
                 Already captured
               </p>
@@ -196,12 +190,13 @@ export default function ProfileProgressPanel({
               <Check
                 className="h-3.5 w-3.5"
                 strokeWidth={2.3}
+                aria-hidden="true"
               />
             </span>
           </div>
 
           <div className="mt-3 space-y-2.5">
-            <div className="rounded-lg border border-white bg-white px-2.5 py-2">
+            <div className="min-w-0 rounded-lg border border-white bg-white px-2.5 py-2">
               <MiniValue
                 label="Role"
                 value={
@@ -211,7 +206,7 @@ export default function ProfileProgressPanel({
               />
             </div>
 
-            <div className="rounded-lg border border-white bg-white px-2.5 py-2">
+            <div className="min-w-0 rounded-lg border border-white bg-white px-2.5 py-2">
               <MiniValue
                 label="Skills"
                 value={
@@ -222,7 +217,7 @@ export default function ProfileProgressPanel({
               />
             </div>
 
-            <div className="rounded-lg border border-white bg-white px-2.5 py-2">
+            <div className="min-w-0 rounded-lg border border-white bg-white px-2.5 py-2">
               <MiniValue
                 label="Projects"
                 value={

@@ -52,13 +52,14 @@ export default function ResumeRoleScreen({
 
   return (
     <SetupShell>
-      <div className="w-full">
+      <div className="mx-auto w-full max-w-3xl">
         {/* Back navigation */}
         <button
           type="button"
           onClick={onBack}
           disabled={isGenerating}
-          className="group inline-flex min-h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-[11px] font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-slate-300 hover:text-slate-950 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-10 sm:rounded-xl sm:px-3.5 sm:text-xs"
+          aria-label="Go back to resume upload"
+          className="group inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-200 hover:border-slate-300 hover:text-slate-950 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:text-sm"
         >
           <ArrowLeft
             className="h-3.5 w-3.5 text-slate-400 transition-transform duration-200 group-hover:-translate-x-0.5"
@@ -72,7 +73,11 @@ export default function ResumeRoleScreen({
         <div className="mt-5 overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.055)] sm:mt-7 sm:rounded-[1.75rem] sm:shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
           {/* Resume status */}
           <div className="border-b border-slate-100 px-4 py-4 sm:px-8 sm:py-5">
-            <div className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50/60 px-3 py-3 sm:rounded-2xl sm:px-4">
+            <div
+              role="status"
+              aria-live="polite"
+              className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50/60 px-3 py-3 sm:rounded-2xl sm:px-4"
+            >
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-emerald-600 shadow-sm ring-1 ring-emerald-100 sm:h-9 sm:w-9 sm:rounded-xl">
                 <CheckCircle2
                   className="h-4 w-4 sm:h-[18px] sm:w-[18px]"
@@ -100,7 +105,7 @@ export default function ResumeRoleScreen({
           </div>
 
           {/* Header */}
-          <div className="px-4 pb-5 pt-5 sm:px-8 sm:pb-7 sm:pt-7">
+          <div className="px-4 pb-5 pt-5 sm:px-8 sm:pb-7 sm:pt-8">
             <Badge>
               <Search
                 className="h-3.5 w-3.5"
@@ -115,9 +120,8 @@ export default function ResumeRoleScreen({
             </h1>
 
             <p className="mt-3 max-w-xl text-[13px] leading-5.5 text-slate-500 sm:mt-4 sm:text-[15px] sm:leading-7">
-              Choose the role you want to prepare
-              for. CareerMap will use it to
-              personalize your roadmap.
+              Choose the role you want to prepare for. CareerMap
+              will use it as the target for your personalized roadmap.
             </p>
           </div>
 
@@ -135,7 +139,11 @@ export default function ResumeRoleScreen({
               </div>
 
               {/* Suggestions */}
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div
+                role="group"
+                aria-label="Suggested target roles"
+                className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+              >
                 {suggestions.map((suggestion) => (
                   <ChoiceButton
                     key={suggestion}
@@ -169,7 +177,7 @@ export default function ResumeRoleScreen({
 
               <input
                 id="roadmap-target-role"
-                value={customRole || role}
+                value={effectiveRole}
                 onChange={(event) => {
                   const value = event.target.value;
 
@@ -178,13 +186,17 @@ export default function ResumeRoleScreen({
                 }}
                 placeholder="e.g. AI Engineer"
                 disabled={isGenerating}
+                aria-describedby="roadmap-target-role-help"
+                inputMode="text"
                 autoComplete="off"
                 className="mt-2.5 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-[13px] text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-70 sm:min-h-12 sm:text-sm"
               />
 
-              <p className="mt-2 text-[9px] leading-4 text-slate-400 sm:text-[10px]">
-                You can enter any specific role you
-                want to target.
+              <p
+                id="roadmap-target-role-help"
+                className="mt-2 text-[9px] leading-4 text-slate-400 sm:text-[10px]"
+              >
+                Enter a specific role such as AI Engineer, Data Analyst, or Frontend Developer.
               </p>
             </div>
 
@@ -205,7 +217,7 @@ export default function ResumeRoleScreen({
                     Roadmap generation failed
                   </p>
 
-                  <p className="mt-0.5 text-[9px] leading-4 text-rose-700/80 sm:text-[11px] sm:leading-4.5">
+                  <p className="mt-0.5 break-words text-[9px] leading-4 text-rose-700/80 sm:text-[11px] sm:leading-4.5">
                     {generationError}
                   </p>
                 </div>
@@ -225,9 +237,8 @@ export default function ResumeRoleScreen({
                   />
 
                   <p className="text-[9px] font-semibold leading-4 text-emerald-700 sm:text-[11px] sm:leading-4.5">
-                    Roadmap generated successfully.
-                    It is stored only in your temporary
-                    CareerMap session.
+                    Roadmap generated successfully. It is stored
+                    only in your temporary CareerMap session.
                   </p>
                 </div>
               )}
@@ -238,6 +249,7 @@ export default function ResumeRoleScreen({
                 type="button"
                 disabled={isGenerating}
                 onClick={onBack}
+                aria-label="Change resume"
                 className="order-2 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-[11px] font-bold text-slate-600 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-50 sm:order-1 sm:w-auto sm:text-xs"
               >
                 <ArrowLeft
@@ -254,6 +266,7 @@ export default function ResumeRoleScreen({
                   !effectiveRole || isGenerating
                 }
                 onClick={onGenerate}
+                aria-busy={isGenerating}
                 className="order-1 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 text-[11px] font-bold text-white shadow-[0_8px_22px_rgba(79,70,229,0.16)] outline-none transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-[0_12px_28px_rgba(79,70,229,0.2)] disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/20 sm:order-2 sm:w-auto sm:text-xs"
               >
                 {isGenerating
@@ -270,6 +283,12 @@ export default function ResumeRoleScreen({
                 )}
               </button>
             </div>
+
+            {!effectiveRole && !generationError ? (
+              <p className="mt-3 text-center text-[9px] font-medium text-slate-400 sm:text-[10px]">
+                Select a suggested role or enter your own role to continue.
+              </p>
+            ) : null}
           </div>
         </div>
       </div>

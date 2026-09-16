@@ -34,30 +34,21 @@ export interface RoadmapSkill {
 
 export interface RoadmapProfile {
   preferredRole: string;
-
   currentLevel: Level | "";
-
   careerGoal: CareerGoal | "";
-
   education: {
     level: string;
     field: string;
   };
-
   experience: {
     level: string;
     types: string[];
     details: string;
   };
-
   skills: RoadmapSkill[];
-
   projects: RoadmapProject[];
-
   learningTimePerWeek: string;
-
   targetTimeline: string;
-
   learningPreferences: string[];
 }
 
@@ -75,15 +66,10 @@ export type StudyResourceType =
 
 export interface StudyResource {
   title: string;
-
   type: StudyResourceType;
-
   provider: string;
-
   description: string;
-
   url?: string;
-
   estimated_minutes?: number;
 }
 
@@ -93,9 +79,7 @@ export interface StudyResource {
 
 export interface PhaseLearn {
   objective: string;
-
   topics: string[];
-
   study_materials: StudyResource[];
 }
 
@@ -105,9 +89,7 @@ export interface PhaseLearn {
 
 export interface PhasePractice {
   objective: string;
-
   activities: string[];
-
   success_criteria: string[];
 }
 
@@ -117,11 +99,8 @@ export interface PhasePractice {
 
 export interface PhaseBuild {
   objective: string;
-
   project: string;
-
   requirements: string[];
-
   deliverables: string[];
 }
 
@@ -131,9 +110,7 @@ export interface PhaseBuild {
 
 export interface PhaseProve {
   objective: string;
-
   evidence: string[];
-
   portfolio_signal: string;
 }
 
@@ -143,9 +120,7 @@ export interface PhaseProve {
 
 export interface GeneratedRoadmapMilestone {
   title: string;
-
   outcome: string;
-
   tasks: string[];
 }
 
@@ -155,25 +130,15 @@ export interface GeneratedRoadmapMilestone {
 
 export interface GeneratedRoadmapPhase {
   phase: number;
-
   title: string;
-
   purpose: string;
-
   duration: string;
-
   focus_skills: string[];
-
   learn: PhaseLearn;
-
   practice: PhasePractice;
-
   build: PhaseBuild;
-
   prove: PhaseProve;
-
   milestones: GeneratedRoadmapMilestone[];
-
   completion_signal: string;
 }
 
@@ -183,19 +148,12 @@ export interface GeneratedRoadmapPhase {
 
 export interface CareerSnapshot {
   current_level: string;
-
   target_role: string;
-
   career_goal: string;
-
   education: string;
-
   experience: string;
-
   learning_time_per_week: string;
-
   target_timeline: string;
-
   learning_preferences: string[];
 }
 
@@ -211,13 +169,9 @@ export type SkillMapStatus =
 
 export interface SkillMapItem {
   skill: string;
-
   current_level: string;
-
   target_level: string;
-
   status: SkillMapStatus;
-
   reason: string;
 }
 
@@ -227,13 +181,9 @@ export interface SkillMapItem {
 
 export interface RoadmapStrategy {
   summary: string;
-
   why_this_roadmap: string;
-
   approach: string[];
-
   priorities: string[];
-
   constraints: string[];
 }
 
@@ -243,11 +193,8 @@ export interface RoadmapStrategy {
 
 export interface WeeklyRoutineItem {
   day: string;
-
   focus: string;
-
   activities: string[];
-
   estimated_minutes: number;
 }
 
@@ -257,11 +204,8 @@ export interface WeeklyRoutineItem {
 
 export interface PortfolioOutcome {
   title: string;
-
   description: string;
-
   skills_demonstrated: string[];
-
   evidence: string[];
 }
 
@@ -276,11 +220,8 @@ export type CareerReadinessStatus =
 
 export interface CareerReadinessItem {
   area: string;
-
   status: CareerReadinessStatus;
-
   current_state: string;
-
   action: string;
 }
 
@@ -290,11 +231,8 @@ export interface CareerReadinessItem {
 
 export interface NextAction {
   title: string;
-
   description: string;
-
   reason: string;
-
   estimated_minutes?: number;
 }
 
@@ -304,30 +242,17 @@ export interface NextAction {
 
 export interface GeneratedRoadmap {
   target_role: string;
-
   profile_summary: string;
-
   career_snapshot: CareerSnapshot;
-
   starting_strengths: string[];
-
   priority_gaps: string[];
-
   skill_map: SkillMapItem[];
-
   roadmap_strategy: RoadmapStrategy;
-
   phases: GeneratedRoadmapPhase[];
-
   weekly_routine: WeeklyRoutineItem[];
-
   portfolio_outcomes: PortfolioOutcome[];
-
   career_readiness: CareerReadinessItem[];
-
   final_readiness_checklist: string[];
-
   next_action: NextAction;
-
   grounding_notes: string[];
 }

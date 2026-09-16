@@ -33,6 +33,7 @@ export default function ChoiceButton({
               "active:scale-[0.99]",
             ].join(" "),
         "focus-visible:border-indigo-400 focus-visible:ring-4 focus-visible:ring-indigo-500/10",
+        "disabled:active:scale-100",
         "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-slate-200 disabled:hover:bg-white",
         className,
       ].join(" ")}

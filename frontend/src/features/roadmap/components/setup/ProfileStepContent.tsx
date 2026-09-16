@@ -250,14 +250,25 @@ function RoleProfileStep({
           />
 
           <input
+            id="roadmap-custom-role"
+            name="roadmap-custom-role"
+            autoComplete="organization-title"
             value={profile.preferredRole}
             onChange={(event) =>
               onChange(event.target.value)
             }
+            aria-describedby="roadmap-role-help"
             placeholder="e.g. Data Engineer"
             className="min-h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10"
           />
         </div>
+
+        <p
+          id="roadmap-role-help"
+          className="mt-2 text-[9px] leading-4 text-slate-400"
+        >
+          Use a specific role such as Data Analyst, ML Engineer, or Frontend Developer.
+        </p>
       </div>
     </div>
   );
@@ -433,12 +444,16 @@ function EducationStep({
 
         {isOtherField ? (
           <input
+            id="roadmap-custom-education"
+            name="roadmap-custom-education"
+            autoComplete="organization"
             value={customEducationField}
             onChange={(event) =>
               setCustomEducationField(
                 event.target.value,
               )
             }
+            aria-label="Custom education field"
             placeholder="Enter your field"
             className="mt-3 min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10"
           />
@@ -617,6 +632,7 @@ function SkillsStep({
       <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-3.5">
         <label className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.08em] text-slate-500">
           <Plus
+            aria-hidden="true"
             className="h-3.5 w-3.5"
             strokeWidth={2}
           />
@@ -625,12 +641,18 @@ function SkillsStep({
 
         <div className="mt-2 flex flex-col gap-2 sm:flex-row">
           <input
+            id="roadmap-custom-skill"
+            name="roadmap-custom-skill"
+            autoComplete="off"
             value={customSkill}
             onChange={(event) =>
               setCustomSkill(event.target.value)
             }
             onKeyDown={(event) => {
-              if (event.key === "Enter") {
+              if (
+                event.key === "Enter" &&
+                !event.nativeEvent.isComposing
+              ) {
                 event.preventDefault();
                 addCustomSkill();
               }
@@ -714,7 +736,7 @@ function SkillsStep({
                           )
                         }
                         className={[
-                          "min-h-9 rounded-lg px-3 text-[9px] font-bold capitalize transition",
+                          "min-h-9 rounded-lg px-3 text-[9px] font-bold capitalize outline-none transition",
                           selected
                             ? "bg-slate-900 text-white"
                             : "bg-slate-50 text-slate-500 ring-1 ring-slate-200 hover:bg-slate-100",
@@ -763,13 +785,19 @@ function ProjectsStep({
       <SectionLabel
         eyebrow="07"
         title="Do you have projects already?"
-        description="Projects are optional. You can also build them as part of the roadmap."
+        description="Projects are optional. Existing projects help CareerMap calibrate the roadmap, but you can build new ones later."
       />
 
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         <ChoiceButton
           selected={!hasProjects}
-          onClick={() => undefined}
+          onClick={() => {
+            if (hasProjects) {
+              profile.projects.forEach((project) =>
+                removeProject(project.id),
+              );
+            }
+          }}
           className="min-h-[88px] justify-start text-left"
         >
           <span className="block">
@@ -833,6 +861,9 @@ function ProjectsStep({
             </label>
 
             <input
+              id="roadmap-project-name"
+              name="roadmap-project-name"
+              autoComplete="off"
               value={projectDraft.name}
               onChange={(event) =>
                 setProjectDraft((current) => ({
@@ -851,6 +882,9 @@ function ProjectsStep({
             </label>
 
             <input
+              id="roadmap-project-technologies"
+              name="roadmap-project-technologies"
+              autoComplete="off"
               value={projectDraft.technologies.join(
                 ", ",
               )}
@@ -901,7 +935,8 @@ function ProjectsStep({
                     )
                   }
                   className={[
-                    "min-h-10 rounded-full border px-3.5 text-[9px] font-bold transition",
+                    "min-h-10 rounded-full border px-3.5 text-[9px] font-bold outline-none transition",
+
                     projectDraft.status ===
                     value
                       ? "border-indigo-300 bg-indigo-50 text-indigo-700"
@@ -920,6 +955,9 @@ function ProjectsStep({
             </label>
 
             <input
+              id="roadmap-project-contribution"
+              name="roadmap-project-contribution"
+              autoComplete="off"
               value={
                 projectDraft.contribution
               }

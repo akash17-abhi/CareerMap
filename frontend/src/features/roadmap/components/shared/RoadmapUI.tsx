@@ -19,7 +19,7 @@ export function SetupShell({
       <BackgroundGlow />
 
       <section className="careermap-section relative">
-        <div className="careermap-container">
+        <div className="careermap-container px-0">
           <motion.div
             initial={{
               opacity: 0,
@@ -34,7 +34,7 @@ export function SetupShell({
               ease: [0.22, 1, 0.36, 1],
             }}
             className={[
-              "mx-auto w-full",
+              "mx-auto w-full motion-reduce:animate-none",
               wide
                 ? "max-w-6xl"
                 : "max-w-2xl",
@@ -54,7 +54,7 @@ export function Badge({
   children: ReactNode;
 }) {
   return (
-    <span className="inline-flex min-h-8 items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 text-[9px] font-bold uppercase tracking-[0.13em] text-indigo-700 sm:min-h-9 sm:px-3.5 sm:text-[10px]">
+    <span className="inline-flex min-h-8 max-w-full shrink-0 items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 text-[9px] font-bold uppercase tracking-[0.13em] text-indigo-700 sm:min-h-9 sm:px-3.5 sm:text-[10px]">
       {children}
     </span>
   );
@@ -67,7 +67,7 @@ export function EmptyReview({
 }) {
   return (
     <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-3.5 py-4 text-center sm:px-4 sm:py-5">
-      <p className="text-[9px] leading-4 text-slate-400 sm:text-[10px] sm:leading-5">
+      <p className="break-words text-[9px] leading-4 text-slate-400 sm:text-[10px] sm:leading-5">
         {text}
       </p>
     </div>
@@ -87,7 +87,7 @@ export function MiniValue({
         {label}
       </span>
 
-      <span className="min-w-0 max-w-[150px] truncate text-right text-[8px] font-bold text-slate-700 sm:max-w-[170px] sm:text-[9px]">
+      <span className="min-w-0 max-w-[150px] truncate text-right sm:max-w-[170px] text-[8px] font-bold text-slate-700 sm:max-w-[170px] sm:text-[9px]">
         {value}
       </span>
     </div>
@@ -98,7 +98,7 @@ export function BackgroundGlow() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 overflow-hidden"
+      className="pointer-events-none absolute inset-0 overflow-hidden contain-paint"
     >
       {/* Top ambient glow */}
       <div className="absolute left-1/2 top-[-9rem] h-72 w-72 -translate-x-1/2 rounded-full bg-indigo-100/20 blur-3xl sm:h-96 sm:w-96" />
@@ -110,7 +110,7 @@ export function BackgroundGlow() {
       <div className="absolute right-[-10rem] top-16 h-80 w-80 rounded-full bg-violet-100/15 blur-3xl sm:h-96 sm:w-96" />
 
       {/* Lower subtle glow */}
-      <div className="absolute bottom-[-12rem] left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-blue-100/10 blur-3xl" />
+      <div className="absolute bottom-[-12rem] left-1/2 hidden h-72 w-72 -translate-x-1/2 rounded-full bg-blue-100/10 blur-3xl sm:block" />
     </div>
   );
 }
@@ -129,7 +129,7 @@ export function Spinner({
     <span
       aria-hidden="true"
       className={[
-        "inline-block shrink-0 animate-spin rounded-full border-indigo-200 border-t-indigo-600",
+        "inline-block h-auto shrink-0 animate-spin rounded-full border-indigo-200 border-t-indigo-600 motion-reduce:animate-none",
         sizeClass,
       ].join(" ")}
     />

@@ -20,14 +20,21 @@ export default function EntryCard({
   onClick,
   featured = false,
 }: EntryCardProps) {
+  const labelId = `${eyebrow}-${title}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-labelledby={labelId}
       className={[
-        "group relative flex min-h-[310px] w-full flex-col overflow-hidden rounded-[1.5rem] border p-6 text-left transition-all duration-300 sm:min-h-[330px] sm:p-7",
+        "group relative flex min-h-[292px] w-full flex-col overflow-hidden rounded-[1.5rem] border p-5 text-left transition-all duration-300 sm:min-h-[330px] sm:p-7",
         "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/10",
-        "active:scale-[0.995]",
+        "motion-reduce:transform-none motion-reduce:transition-none",
+        "touch-manipulation active:scale-[0.995]",
         featured
           ? [
               "border-indigo-200/80 bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/35",
@@ -63,7 +70,10 @@ export default function EntryCard({
         </div>
 
         {featured && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-100 bg-white/80 px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.1em] text-indigo-600 shadow-sm">
+          <span
+            aria-label="Recommended option"
+            className="hidden items-center gap-1.5 rounded-full border border-indigo-100 bg-white/80 px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.1em] text-indigo-600 shadow-sm min-[380px]:inline-flex"
+          >
             <Check
               className="h-3 w-3"
               strokeWidth={2.2}
@@ -74,7 +84,7 @@ export default function EntryCard({
       </div>
 
       {/* Content */}
-      <div className="relative mt-7">
+      <div className="relative mt-6 sm:mt-7">
         <p
           className={[
             "text-[10px] font-bold uppercase tracking-[0.12em]",
@@ -86,11 +96,16 @@ export default function EntryCard({
           {eyebrow}
         </p>
 
-        <h2 className="mt-2.5 text-[20px] font-bold leading-7 tracking-[-0.025em] text-slate-950 sm:text-[21px]">
+        <h2
+          id={labelId}
+          className="mt-2.5 text-[20px] font-bold leading-7 tracking-[-0.025em] text-slate-950 sm:text-[21px]"
+        >
           {title}
         </h2>
 
-        <p className="mt-3 max-w-md text-[13px] leading-5.5 text-slate-500 sm:text-[14px] sm:leading-6">
+        <p
+          className="mt-3 max-w-md text-[13px] leading-5.5 text-slate-500 sm:text-[14px] sm:leading-6"
+        >
           {description}
         </p>
       </div>

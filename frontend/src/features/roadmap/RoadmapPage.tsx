@@ -31,6 +31,7 @@ import {
 
 import { useCareerMapSession } from "@/context/CareerMapSessionContext";
 import { apiUrl } from "@/lib/api";
+import PDFExportButton from "@/components/shared/PDFExportButton";
 import EntryCard from "@/features/roadmap/components/setup/EntryCard";
 import ChoiceButton from "@/features/roadmap/components/setup/ChoiceButton";
 import type {
@@ -1165,6 +1166,12 @@ function RoadmapGenerationScreen({
   );
 }
 
+type RoadmapStudyResource = GeneratedRoadmap["phases"][number]["learn"]["study_materials"][number];
+type RoadmapSkillMapItem = GeneratedRoadmap["skill_map"][number];
+type RoadmapWeeklyRoutineItem = GeneratedRoadmap["weekly_routine"][number];
+type RoadmapPortfolioOutcome = GeneratedRoadmap["portfolio_outcomes"][number];
+type RoadmapCareerReadinessItem = GeneratedRoadmap["career_readiness"][number];
+
 function RoadmapResultsScreen({
   roadmap,
   source,
@@ -1179,6 +1186,7 @@ function RoadmapResultsScreen({
   onStartOver: () => void;
 }) {
   const navigate = useNavigate();
+  const [openPhase, setOpenPhase] = useState(0);
 
   const totalPhases = roadmap.phases.length;
   const totalMilestones = roadmap.phases.reduce(
@@ -1186,44 +1194,97 @@ function RoadmapResultsScreen({
     0,
   );
 
+  const sourceLabel =
+    source === "cv"
+      ? "Resume-based"
+      : source === "analyzer"
+        ? "Analyzer-informed"
+        : "Profile-based";
+
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <BackgroundGlow />
 
-      <main className="relative mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6 sm:pt-10 lg:px-8">
-        <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_18px_60px_-30px_rgba(15,23,42,0.28)]">
-          <div className="border-b border-slate-200 bg-slate-50/80 px-5 py-6 sm:px-8 sm:py-8">
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-              <div className="max-w-3xl">
-                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-700">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Personalized roadmap
+      <main className="relative mx-auto w-full max-w-6xl px-3 pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-8 lg:px-8">
+        <section className="overflow-hidden rounded-[1.5rem] border border-slate-200/90 bg-white shadow-[0_20px_70px_-34px_rgba(15,23,42,0.28)] sm:rounded-[2rem]">
+          <header className="border-b border-slate-200 bg-[linear-gradient(135deg,#f8fafc_0%,#ffffff_52%,#eef2ff_100%)] px-4 py-5 sm:px-8 sm:py-9">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                <div className="min-w-0 max-w-3xl">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-700">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Personalized roadmap
+                  </span>
+
+                  <h1 className="mt-4 break-words text-[1.75rem] font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">
+                    Your path to {roadmap.target_role}
+                  </h1>
+
+                  <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+                    {roadmap.profile_summary}
+                  </p>
                 </div>
-                <h1 className="mt-4 text-2xl font-black tracking-tight text-slate-950 sm:text-4xl">
-                  Your path to {roadmap.target_role}
-                </h1>
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-                  {roadmap.profile_summary}
-                </p>
+
+                <div className="flex flex-wrap gap-2 lg:max-w-sm lg:justify-end">
+                  <ResultPill label={`${totalPhases} ${totalPhases === 1 ? "phase" : "phases"}`} />
+                  <ResultPill
+                    label={`${totalMilestones} ${totalMilestones === 1 ? "milestone" : "milestones"}`}
+                  />
+                  <ResultPill label={sourceLabel} />
+                </div>
               </div>
 
-              <div className="flex shrink-0 flex-wrap gap-2">
-                <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600">
-                  {totalPhases} phases
-                </span>
-                <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600">
-                  {totalMilestones} milestones
-                </span>
-                {source ? (
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600">
-                    {source === "cv" ? "Resume-based" : "Profile-based"}
-                  </span>
-                ) : null}
+              <div className="grid gap-3 sm:grid-cols-3">
+                <SnapshotMini
+                  label="Current level"
+                  value={roadmap.career_snapshot.current_level}
+                />
+                <SnapshotMini
+                  label="Learning time"
+                  value={roadmap.career_snapshot.learning_time_per_week}
+                />
+                <SnapshotMini
+                  label="Target timeline"
+                  value={roadmap.career_snapshot.target_timeline}
+                />
               </div>
             </div>
-          </div>
+          </header>
 
-          <div className="grid gap-4 border-b border-slate-200 p-5 sm:grid-cols-2 sm:p-8">
+          <section className="border-b border-slate-200 px-4 py-6 sm:px-8 sm:py-8">
+            <SectionHeading
+              eyebrow="Career snapshot"
+              title="Your starting point"
+              icon={<Target className="h-4 w-4" />}
+            />
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <SnapshotCard label="Target role" value={roadmap.career_snapshot.target_role} />
+              <SnapshotCard label="Career goal" value={roadmap.career_snapshot.career_goal} />
+              <SnapshotCard label="Education" value={roadmap.career_snapshot.education} />
+              <SnapshotCard label="Experience" value={roadmap.career_snapshot.experience} />
+            </div>
+
+            {roadmap.career_snapshot.learning_preferences.length > 0 ? (
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">
+                  Learning preferences
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {roadmap.career_snapshot.learning_preferences.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-slate-600"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </section>
+
+          <section className="grid gap-4 border-b border-slate-200 p-4 sm:grid-cols-2 sm:p-8">
             <InsightCard
               icon={<CheckCircle2 className="h-4 w-4" />}
               title="Starting strengths"
@@ -1238,129 +1299,316 @@ function RoadmapResultsScreen({
               tone="attention"
               emptyLabel="No priority gaps were highlighted."
             />
-          </div>
+          </section>
 
-          <section className="px-5 py-7 sm:px-8 sm:py-9">
-            <div className="flex items-end justify-between gap-4">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600">
-                  Step-by-step plan
+          <section className="border-b border-slate-200 px-4 py-7 sm:px-8 sm:py-9">
+            <SectionHeading
+              eyebrow="Roadmap strategy"
+              title="Why this path was chosen"
+              icon={<Sparkles className="h-4 w-4" />}
+            />
+
+            <div className="mt-5 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+              <article className="rounded-3xl border border-indigo-100 bg-indigo-50/55 p-5 sm:p-6">
+                <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-indigo-600">
+                  Strategy
                 </p>
-                <h2 className="mt-1 text-xl font-black text-slate-950 sm:text-2xl">
-                  Your career journey
-                </h2>
+                <p className="mt-3 text-sm leading-6 text-slate-700">
+                  {roadmap.roadmap_strategy.summary}
+                </p>
+
+                {roadmap.roadmap_strategy.why_this_roadmap ? (
+                  <div className="mt-5 border-t border-indigo-100 pt-5">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-indigo-600">
+                      Personalization logic
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-slate-700">
+                      {roadmap.roadmap_strategy.why_this_roadmap}
+                    </p>
+                  </div>
+                ) : null}
+              </article>
+
+              <article className="rounded-3xl border border-slate-200 bg-slate-50/65 p-5 sm:p-6">
+                <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                  Approach
+                </p>
+                {roadmap.roadmap_strategy.approach.length > 0 ? (
+                  <div className="mt-4 space-y-3">
+                    {roadmap.roadmap_strategy.approach.map((item, index) => (
+                      <div key={`${index}-${item}`} className="flex items-start gap-3">
+                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-[9px] font-black text-indigo-600 ring-1 ring-slate-200">
+                          {index + 1}
+                        </span>
+                        <p className="text-xs leading-5 text-slate-600">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-4 text-xs text-slate-500">No specific approach was provided.</p>
+                )}
+              </article>
+            </div>
+
+            {roadmap.roadmap_strategy.priorities.length > 0 ||
+            roadmap.roadmap_strategy.constraints.length > 0 ? (
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <RoadmapListCard
+                  icon={<Target className="h-4 w-4" />}
+                  title="Priority focus"
+                  items={roadmap.roadmap_strategy.priorities}
+                />
+                <RoadmapListCard
+                  icon={<Clock3 className="h-4 w-4" />}
+                  title="Planning constraints"
+                  items={roadmap.roadmap_strategy.constraints}
+                />
               </div>
-              <span className="hidden text-right text-xs text-slate-500 sm:block">
-                Foundations → applied skills → proof → readiness
+            ) : null}
+          </section>
+
+          <section className="border-b border-slate-200 px-4 py-7 sm:px-8 sm:py-9">
+            <SectionHeading
+              eyebrow="Skill map"
+              title="What to strengthen for the target role"
+              icon={<Code2 className="h-4 w-4" />}
+            />
+
+            {roadmap.skill_map.length > 0 ? (
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {roadmap.skill_map.map((skill, index) => (
+                  <SkillMapCard key={`${index}-${skill.skill}`} skill={skill} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState text="No skill map was provided." />
+            )}
+          </section>
+
+          <section className="border-b border-slate-200 px-4 py-7 sm:px-8 sm:py-9">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <SectionHeading
+                eyebrow="Step-by-step plan"
+                title="Your career journey"
+                icon={<Map className="h-4 w-4" />}
+              />
+              <span className="text-xs font-medium text-slate-500">
+                Learn → Practice → Build → Prove
               </span>
             </div>
 
-            <div className="mt-7 space-y-6">
-              {roadmap.phases.map((phase, index) => (
-                <PhaseCard
-                  key={`${phase.phase}-${phase.title}`}
-                  phase={phase}
-                  index={index}
-                />
-              ))}
-            </div>
+            {roadmap.phases.length > 0 ? (
+              <div className="mt-6 space-y-4">
+                {roadmap.phases.map((phase, index) => (
+                  <RoadmapPhaseCard
+                    key={`${phase.phase}-${phase.title}`}
+                    phase={phase}
+                    index={index}
+                    open={openPhase === index}
+                    onToggle={() => setOpenPhase(openPhase === index ? -1 : index)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyState text="No roadmap phases were provided." />
+            )}
           </section>
 
-          <section className="grid gap-4 border-t border-slate-200 bg-slate-50/50 p-5 sm:grid-cols-2 sm:p-8">
-            <RoadmapListCard
-              icon={<Clock3 className="h-4 w-4" />}
-              title="Weekly routine"
-              items={roadmap.weekly_routine.map((item) =>
-                `${item.day} (${item.estimated_minutes} min): ${item.focus} — ${item.activities.join("; ")}`
-              )}
-            />
-            <RoadmapListCard
+          <section className="grid gap-4 border-b border-slate-200 bg-slate-50/60 p-4 sm:grid-cols-2 sm:p-8">
+            <WeeklyRoutineCard items={roadmap.weekly_routine} />
+            <PortfolioOutcomesCard items={roadmap.portfolio_outcomes} />
+          </section>
+
+          <section className="border-b border-slate-200 px-4 py-7 sm:px-8 sm:py-9">
+            <SectionHeading
+              eyebrow="Career readiness"
+              title="What readiness looks like"
               icon={<BriefcaseBusiness className="h-4 w-4" />}
-              title="Portfolio outcomes"
-              items={roadmap.portfolio_outcomes.map((item) =>
-                `${item.title}: ${item.description}`
-              )}
             />
+
+            {roadmap.career_readiness.length > 0 ? (
+              <div className="mt-5 space-y-3">
+                {roadmap.career_readiness.map((item, index) => (
+                  <CareerReadinessCard key={`${index}-${item.area}`} item={item} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState text="No career readiness guidance was provided." />
+            )}
           </section>
 
-          <section className="border-t border-slate-200 px-5 py-7 sm:px-8 sm:py-9">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              <h2 className="text-lg font-black text-slate-950">
-                Final readiness checklist
-              </h2>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {roadmap.final_readiness_checklist.map((item, index) => (
-                <div
-                  key={`${index}-${item}`}
-                  className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4"
-                >
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                    <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </span>
-                  <p className="text-sm leading-5 text-slate-700">{item}</p>
-                </div>
-              ))}
-            </div>
+          <section className="border-b border-slate-200 px-4 py-7 sm:px-8 sm:py-9">
+            <SectionHeading
+              eyebrow="Final check"
+              title="Final readiness checklist"
+              icon={<ShieldCheck className="h-4 w-4" />}
+            />
+
+            {roadmap.final_readiness_checklist.length > 0 ? (
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {roadmap.final_readiness_checklist.map((item, index) => (
+                  <div
+                    key={`${index}-${item}`}
+                    className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4"
+                  >
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                      <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    </span>
+                    <p className="text-sm leading-5 text-slate-700">{item}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState text="No final readiness checks were provided." />
+            )}
           </section>
 
           {roadmap.grounding_notes.length > 0 ? (
-            <section className="border-t border-slate-200 bg-white px-5 py-7 sm:px-8 sm:py-8">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-indigo-600" />
-                <h2 className="text-base font-black text-slate-950">
-                  Grounding notes
-                </h2>
-              </div>
-              <div className="mt-4 space-y-2">
-                {roadmap.grounding_notes.map((note, index) => (
-                  <p
-                    key={`${index}-${note}`}
-                    className="text-xs leading-5 text-slate-500"
-                  >
-                    {note}
-                  </p>
-                ))}
+            <section className="border-b border-slate-200 bg-white px-4 py-7 sm:px-8 sm:py-8">
+              <SectionHeading
+                eyebrow="Transparency"
+                title="How CareerMap built this"
+                icon={<ShieldCheck className="h-4 w-4" />}
+              />
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5">
+                <div className="space-y-2">
+                  {roadmap.grounding_notes.map((note, index) => (
+                    <p key={`${index}-${note}`} className="text-xs leading-5 text-slate-500">
+                      {note}
+                    </p>
+                  ))}
+                </div>
               </div>
             </section>
           ) : null}
 
-          <footer className="flex flex-col gap-4 border-t border-slate-200 bg-slate-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-            <div>
-              <p className="text-xs font-semibold text-slate-700">
-                Your roadmap is stored only in this temporary CareerMap session.
-              </p>
-              {generatedAt ? (
-                <p className="mt-1 text-[10px] text-slate-500">
-                  Generated {formatRoadmapDate(generatedAt)}
+          <section className="border-b border-slate-200 bg-[linear-gradient(135deg,#eef2ff_0%,#ffffff_55%,#eff6ff_100%)] px-4 py-7 sm:px-8 sm:py-9">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0 max-w-2xl">
+                <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-indigo-600">
+                  Your next action
                 </p>
+                <h2 className="mt-2 break-words text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
+                  {roadmap.next_action.title}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {roadmap.next_action.description}
+                </p>
+                {roadmap.next_action.reason ? (
+                  <p className="mt-3 text-xs leading-5 text-slate-500">
+                    <span className="font-bold text-slate-700">Why now:</span>{" "}
+                    {roadmap.next_action.reason}
+                  </p>
+                ) : null}
+              </div>
+
+              {typeof roadmap.next_action.estimated_minutes === "number" ? (
+                <span className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-bold text-slate-600">
+                  <Clock3 className="h-3.5 w-3.5" />
+                  {roadmap.next_action.estimated_minutes} min
+                </span>
               ) : null}
             </div>
+          </section>
 
-            <div className="flex flex-wrap gap-2">
-              {cameFromAnalyzer ? (
+          <footer className="bg-slate-100/90 px-4 py-5 sm:px-8 sm:py-6">
+            <div className="flex flex-col gap-4">
+              <div className="min-w-0">
+                <p className="text-xs font-semibold leading-5 text-slate-700">
+                  Your roadmap is stored only in this temporary CareerMap session.
+                </p>
+                {generatedAt ? (
+                  <p className="mt-1 text-[10px] text-slate-500">
+                    Generated {formatRoadmapDate(generatedAt)}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="grid gap-2 sm:flex sm:flex-wrap sm:justify-end">
+                {cameFromAnalyzer ? (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/analyzer")}
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-xs font-bold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 sm:w-auto"
+                  >
+                    <ArrowLeft className="h-3.5 w-3.5" />
+                    Resume &amp; JD Analyzer
+                  </button>
+                ) : null}
+
+                <PDFExportButton
+                  endpoint="/api/pdf/roadmap"
+                  payload={{
+                    roadmap,
+                    source,
+                    generated_at: generatedAt,
+                  }}
+                  filename="careermap-career-roadmap.pdf"
+                  label="Export PDF"
+                  exportingLabel="Generating PDF..."
+                />
+
                 <button
                   type="button"
-                  onClick={() => navigate("/analyzer")}
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-xs font-bold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                  onClick={onStartOver}
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white transition hover:bg-slate-800 sm:w-auto"
                 >
-                  <ArrowLeft className="h-3.5 w-3.5" />
-                  Resume & JD Analyzer
+                  Build another roadmap
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </button>
-              ) : null}
-              <button
-                type="button"
-                onClick={onStartOver}
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white transition hover:bg-slate-800"
-              >
-                Build another roadmap
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
+              </div>
             </div>
           </footer>
         </section>
       </main>
+    </div>
+  );
+}
+
+function SectionHeading({
+  eyebrow,
+  title,
+  icon,
+}: {
+  eyebrow: string;
+  title: string;
+  icon: ReactNode;
+}) {
+  return (
+    <div className="min-w-0">
+      <div className="flex items-center gap-2 text-indigo-600">
+        {icon}
+        <p className="text-[9px] font-bold uppercase tracking-[0.18em]">{eyebrow}</p>
+      </div>
+      <h2 className="mt-1 text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
+        {title}
+      </h2>
+    </div>
+  );
+}
+
+function ResultPill({ label }: { label: string }) {
+  return (
+    <span className="rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 text-[10px] font-semibold text-slate-600 shadow-sm">
+      {label}
+    </span>
+  );
+}
+
+function SnapshotMini({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-white/80 bg-white/80 p-3.5 shadow-sm ring-1 ring-slate-200/70">
+      <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+      <p className="mt-1.5 break-words text-xs font-bold leading-5 text-slate-800">{value || "Not specified"}</p>
+    </div>
+  );
+}
+
+function SnapshotCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+      <p className="mt-1.5 break-words text-sm font-semibold leading-5 text-slate-800">{value || "Not specified"}</p>
     </div>
   );
 }
@@ -1391,6 +1639,7 @@ function InsightCard({
         </span>
         <h3 className="text-sm font-black text-slate-950">{title}</h3>
       </div>
+
       {items.length > 0 ? (
         <div className="mt-4 space-y-2.5">
           {items.map((item, index) => (
@@ -1407,144 +1656,452 @@ function InsightCard({
   );
 }
 
-function PhaseCard({
+function RoadmapPhaseCard({
   phase,
   index,
+  open,
+  onToggle,
 }: {
   phase: GeneratedRoadmapPhase;
   index: number;
+  open: boolean;
+  onToggle: () => void;
 }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.25) }}
-      className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+      transition={{ duration: 0.3, delay: Math.min(index * 0.04, 0.16) }}
+      className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
     >
-      <div className="border-b border-slate-200 bg-gradient-to-r from-slate-50 via-white to-indigo-50/40 p-5 sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex gap-3">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="w-full text-left"
+      >
+        <div className="bg-[linear-gradient(135deg,#f8fafc_0%,#ffffff_58%,#eef2ff_100%)] p-4 sm:p-6">
+          <div className="flex items-start gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-xs font-black text-white">
               {String(phase.phase).padStart(2, "0")}
             </span>
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-600">
-                Phase {phase.phase}
-              </p>
-              <h3 className="mt-1 text-lg font-black tracking-tight text-slate-950 sm:text-xl">
-                {phase.title}
-              </h3>
-            </div>
-          </div>
-          <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600">
-            <Clock3 className="h-3.5 w-3.5" />
-            {phase.duration}
-          </span>
-        </div>
-        <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-600">
-          {phase.purpose}
-        </p>
-        {phase.focus_skills.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {phase.focus_skills.map((skill) => (
-              <span
-                key={skill}
-                className="rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-1 text-[10px] font-semibold text-indigo-700"
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
-        ) : null}
-      </div>
 
-      <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[1.4fr_0.8fr]">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
-            Milestones
-          </p>
-          <div className="mt-3 space-y-3">
-            {phase.milestones.map((milestone, milestoneIndex) => (
-              <div
-                key={`${milestoneIndex}-${milestone.title}`}
-                className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200">
-                    {milestoneIndex + 1}
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-indigo-600">
+                    Phase {phase.phase}
+                  </p>
+                  <h3 className="mt-1 break-words text-base font-black tracking-tight text-slate-950 sm:text-xl">
+                    {phase.title}
+                  </h3>
+                </div>
+
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600">
+                    <Clock3 className="h-3.5 w-3.5" />
+                    {phase.duration}
                   </span>
-                  <div className="min-w-0">
-                    <h4 className="text-sm font-bold text-slate-900">
-                      {milestone.title}
-                    </h4>
-                    <p className="mt-1 text-xs leading-5 text-slate-600">
-                      {milestone.outcome}
-                    </p>
-                    {milestone.tasks.length > 0 ? (
-                      <div className="mt-3 space-y-1.5">
-                        {milestone.tasks.map((task, taskIndex) => (
-                          <p
-                            key={`${taskIndex}-${task}`}
-                            className="flex items-start gap-2 text-[11px] leading-4.5 text-slate-500"
-                          >
-                            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-300" />
-                            {task}
-                          </p>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500">
+                    <ArrowRight className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-90" : ""}`} />
+                  </span>
                 </div>
               </div>
-            ))}
+
+              <p className="mt-3 text-sm leading-6 text-slate-600">{phase.purpose}</p>
+
+              {phase.focus_skills.length > 0 ? (
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {phase.focus_skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-1 text-[10px] font-semibold text-indigo-700"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
+      </button>
 
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
-            <div className="flex items-center gap-2 text-indigo-700">
-              <Code2 className="h-4 w-4" />
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em]">
-                Practical project
-              </p>
-            </div>
-            <p className="mt-2 text-sm font-semibold leading-5 text-indigo-950">
-              {phase.build.project}
-            </p>
+      {open ? (
+        <div className="border-t border-slate-200 p-4 sm:p-6">
+          <div className="grid gap-4 lg:grid-cols-2">
+            <PhaseStageCard
+              label="Learn"
+              icon={<BookOpen className="h-4 w-4" />}
+              tone="indigo"
+              objective={phase.learn.objective}
+            >
+              {phase.learn.topics.length > 0 ? (
+                <div>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">Topics</p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {phase.learn.topics.map((topic) => (
+                      <span key={topic} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[9px] font-semibold text-slate-600">
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {phase.learn.study_materials.length > 0 ? (
+                <div className="mt-4 space-y-2">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">Study materials</p>
+                  {phase.learn.study_materials.map((resource, resourceIndex) => (
+                    <StudyResourceCard key={`${resource.title}-${resourceIndex}`} resource={resource} />
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-3 text-xs text-slate-500">No study materials were supplied for this phase.</p>
+              )}
+            </PhaseStageCard>
+
+            <PhaseStageCard
+              label="Practice"
+              icon={<Code2 className="h-4 w-4" />}
+              tone="blue"
+              objective={phase.practice.objective}
+            >
+              <BulletGroup title="Activities" items={phase.practice.activities} />
+              <BulletGroup title="Success criteria" items={phase.practice.success_criteria} />
+            </PhaseStageCard>
+
+            <PhaseStageCard
+              label="Build"
+              icon={<Hammer className="h-4 w-4" />}
+              tone="violet"
+              objective={phase.build.objective}
+            >
+              <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-3.5">
+                <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-violet-600">Project</p>
+                <p className="mt-1.5 text-sm font-bold leading-5 text-violet-950">{phase.build.project}</p>
+              </div>
+              <BulletGroup title="Requirements" items={phase.build.requirements} />
+              <BulletGroup title="Deliverables" items={phase.build.deliverables} />
+            </PhaseStageCard>
+
+            <PhaseStageCard
+              label="Prove"
+              icon={<ShieldCheck className="h-4 w-4" />}
+              tone="emerald"
+              objective={phase.prove.objective}
+            >
+              <BulletGroup title="Evidence" items={phase.prove.evidence} />
+              {phase.prove.portfolio_signal ? (
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/55 p-3.5">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-emerald-700">Portfolio signal</p>
+                  <p className="mt-1.5 text-xs leading-5 text-emerald-950">{phase.prove.portfolio_signal}</p>
+                </div>
+              ) : null}
+            </PhaseStageCard>
           </div>
 
-          <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
-            <div className="flex items-center gap-2 text-emerald-700">
-              <CheckCircle2 className="h-4 w-4" />
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em]">
-                Completion signal
-              </p>
+          <div className="mt-4 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+            <article className="rounded-3xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+              <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">Milestones</p>
+              <div className="mt-3 space-y-2.5">
+                {phase.milestones.map((milestone, milestoneIndex) => (
+                  <div key={`${milestoneIndex}-${milestone.title}`} className="rounded-2xl border border-slate-200 bg-white p-3.5">
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-[10px] font-black text-indigo-600">{milestoneIndex + 1}</span>
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-bold text-slate-900">{milestone.title}</h4>
+                        <p className="mt-1 text-[11px] leading-5 text-slate-600">{milestone.outcome}</p>
+                        {milestone.tasks.length > 0 ? (
+                          <div className="mt-2 space-y-1">
+                            {milestone.tasks.map((task, taskIndex) => (
+                              <p key={`${taskIndex}-${task}`} className="text-[10px] leading-4.5 text-slate-500">• {task}</p>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <div className="space-y-4">
+              <div className="rounded-3xl border border-indigo-100 bg-indigo-50/55 p-4 sm:p-5">
+                <div className="flex items-center gap-2 text-indigo-700">
+                  <Wrench className="h-4 w-4" />
+                  <p className="text-[9px] font-bold uppercase tracking-[0.14em]">Practical outcome</p>
+                </div>
+                <p className="mt-2 text-sm font-bold leading-5 text-indigo-950">{phase.build.project}</p>
+              </div>
+
+              <div className="rounded-3xl border border-emerald-100 bg-emerald-50/55 p-4 sm:p-5">
+                <div className="flex items-center gap-2 text-emerald-700">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <p className="text-[9px] font-bold uppercase tracking-[0.14em]">Completion signal</p>
+                </div>
+                <p className="mt-2 text-sm font-bold leading-5 text-emerald-950">{phase.completion_signal}</p>
+              </div>
             </div>
-            <p className="mt-2 text-sm font-semibold leading-5 text-emerald-950">
-              {phase.completion_signal}
-            </p>
           </div>
         </div>
-      </div>
+      ) : null}
     </motion.article>
   );
 }
 
-function RoadmapListCard({
+function PhaseStageCard({
+  label,
   icon,
-  title,
-  items,
+  tone,
+  objective,
+  children,
 }: {
+  label: string;
   icon: ReactNode;
-  title: string;
-  items: string[];
+  tone: "indigo" | "blue" | "violet" | "emerald";
+  objective: string;
+  children: ReactNode;
 }) {
+  const styles = {
+    indigo: "border-indigo-100 bg-indigo-50/35 text-indigo-700",
+    blue: "border-blue-100 bg-blue-50/35 text-blue-700",
+    violet: "border-violet-100 bg-violet-50/35 text-violet-700",
+    emerald: "border-emerald-100 bg-emerald-50/35 text-emerald-700",
+  } as const;
+
+  return (
+    <article className={`rounded-3xl border p-4 sm:p-5 ${styles[tone]}`}>
+      <div className="flex items-center gap-2">
+        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white ring-1 ring-slate-200/70">
+          {icon}
+        </span>
+        <p className="text-[10px] font-black uppercase tracking-[0.16em]">{label}</p>
+      </div>
+      <p className="mt-3 text-xs font-semibold leading-5 text-slate-700">{objective}</p>
+      <div className="mt-4 space-y-3">{children}</div>
+    </article>
+  );
+}
+
+function BulletGroup({ title, items }: { title: string; items: string[] }) {
+  if (items.length === 0) return null;
+
+  return (
+    <div>
+      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400">{title}</p>
+      <div className="mt-2 space-y-1.5">
+        {items.map((item, index) => (
+          <p key={`${index}-${item}`} className="flex items-start gap-2 text-[11px] leading-5 text-slate-600">
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-300" />
+            {item}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StudyResourceCard({ resource }: { resource: RoadmapStudyResource }) {
+  return (
+    <article className="rounded-2xl border border-slate-200 bg-white p-3.5">
+      <div className="flex items-start gap-3">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+          {resource.type.toLowerCase().includes("video") ? <Video className="h-4 w-4" /> : <BookOpen className="h-4 w-4" />}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="break-words text-xs font-bold text-slate-900">{resource.title}</p>
+              <p className="mt-1 text-[10px] text-slate-500">
+                {resource.provider} · {resource.type}
+              </p>
+            </div>
+            <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[8px] font-bold uppercase tracking-[0.08em] text-slate-500">
+              {resource.type.replace(/_/g, " ")}
+            </span>
+          </div>
+
+          <p className="mt-2 text-[10px] leading-4.5 text-slate-600">{resource.description}</p>
+
+          <div className="mt-3 flex flex-wrap items-center gap-1.5">
+            
+            
+            {resource.estimated_minutes ? (
+              <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[8px] font-semibold text-slate-500">
+                {resource.estimated_minutes} min
+              </span>
+            ) : null}
+            {resource.url ? (
+              <a
+                href={resource.url}
+                target="_blank"
+                rel="noreferrer"
+                className="ml-auto inline-flex items-center gap-1 rounded-lg bg-slate-950 px-2.5 py-1.5 text-[9px] font-bold text-white hover:bg-slate-800"
+                onClick={(event) => event.stopPropagation()}
+              >
+                Open resource
+                <ArrowRight className="h-3 w-3" />
+              </a>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function SkillMapCard({ skill }: { skill: RoadmapSkillMapItem }) {
+  const statusClasses = getSkillStatusClasses(skill.status);
+
+  return (
+    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h3 className="break-words text-sm font-bold text-slate-900">{skill.skill}</h3>
+          <p className="mt-1 text-[11px] leading-5 text-slate-500">{skill.reason}</p>
+        </div>
+        <span className={`w-fit shrink-0 rounded-full border px-2.5 py-1 text-[9px] font-bold capitalize ${statusClasses}`}>
+          {skill.status.replace(/-/g, " ")}
+        </span>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="rounded-xl bg-slate-50 p-3">
+          <p className="text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">Current</p>
+          <p className="mt-1 text-[10px] font-semibold text-slate-700">{skill.current_level || "Not provided"}</p>
+        </div>
+        <div className="rounded-xl bg-indigo-50/70 p-3">
+          <p className="text-[8px] font-bold uppercase tracking-[0.08em] text-indigo-500">Target</p>
+          <p className="mt-1 text-[10px] font-semibold text-indigo-800">{skill.target_level || "Not provided"}</p>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function getSkillStatusClasses(status: string) {
+  switch (status) {
+    case "strength":
+      return "border-emerald-100 bg-emerald-50 text-emerald-700";
+    case "developing":
+      return "border-blue-100 bg-blue-50 text-blue-700";
+    case "priority-gap":
+      return "border-amber-100 bg-amber-50 text-amber-700";
+    case "target":
+      return "border-indigo-100 bg-indigo-50 text-indigo-700";
+    default:
+      return "border-slate-200 bg-slate-50 text-slate-600";
+  }
+}
+
+function WeeklyRoutineCard({ items }: { items: RoadmapWeeklyRoutineItem[] }) {
   return (
     <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="flex items-center gap-2">
         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-          {icon}
+          <Clock3 className="h-4 w-4" />
         </span>
+        <h3 className="text-sm font-black text-slate-950">Weekly study plan</h3>
+      </div>
+
+      {items.length > 0 ? (
+        <div className="mt-4 space-y-2.5">
+          {items.map((item, index) => (
+            <div key={`${index}-${item.day}-${item.focus}`} className="rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-bold text-slate-900">{item.day}</p>
+                <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-[9px] font-semibold text-slate-500">{item.estimated_minutes} min</span>
+              </div>
+              <p className="mt-1.5 text-xs font-semibold text-indigo-700">{item.focus}</p>
+              {item.activities.length > 0 ? (
+                <div className="mt-2 space-y-1">
+                  {item.activities.map((activity, activityIndex) => (
+                    <p key={`${activityIndex}-${activity}`} className="text-[11px] leading-4.5 text-slate-600">• {activity}</p>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-4 text-xs text-slate-500">No weekly routine was specified.</p>
+      )}
+    </article>
+  );
+}
+
+function PortfolioOutcomesCard({ items }: { items: RoadmapPortfolioOutcome[] }) {
+  return (
+    <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="flex items-center gap-2">
+        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+          <BriefcaseBusiness className="h-4 w-4" />
+        </span>
+        <h3 className="text-sm font-black text-slate-950">Portfolio proof</h3>
+      </div>
+
+      {items.length > 0 ? (
+        <div className="mt-4 space-y-3">
+          {items.map((item, index) => (
+            <div key={`${index}-${item.title}`} className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+              <h4 className="text-xs font-bold text-slate-900">{item.title}</h4>
+              <p className="mt-1.5 text-[11px] leading-5 text-slate-600">{item.description}</p>
+              {item.skills_demonstrated.length > 0 ? (
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {item.skills_demonstrated.map((skill) => (
+                    <span key={skill} className="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-1 text-[8px] font-semibold text-indigo-700">{skill}</span>
+                  ))}
+                </div>
+              ) : null}
+              {item.evidence.length > 0 ? (
+                <div className="mt-3 space-y-1">
+                  {item.evidence.map((evidence, evidenceIndex) => (
+                    <p key={`${evidenceIndex}-${evidence}`} className="text-[10px] leading-4 text-slate-500">• {evidence}</p>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-4 text-xs text-slate-500">No portfolio outcomes were specified.</p>
+      )}
+    </article>
+  );
+}
+
+function CareerReadinessCard({ item }: { item: RoadmapCareerReadinessItem }) {
+  const statusMap: Record<string, string> = {
+    ready: "border-emerald-100 bg-emerald-50 text-emerald-700",
+    developing: "border-amber-100 bg-amber-50 text-amber-700",
+    "not-started": "border-slate-200 bg-slate-50 text-slate-600",
+  };
+
+  return (
+    <article className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h3 className="text-sm font-bold text-slate-900">{item.area}</h3>
+          <p className="mt-1.5 text-xs leading-5 text-slate-600">{item.current_state}</p>
+        </div>
+        <span className={`w-fit shrink-0 rounded-full border px-2.5 py-1 text-[9px] font-bold capitalize ${statusMap[item.status] ?? statusMap["not-started"]}`}>
+          {item.status.replace(/-/g, " ")}
+        </span>
+      </div>
+      <div className="mt-3 rounded-xl bg-slate-50 p-3">
+        <p className="text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">Action</p>
+        <p className="mt-1 text-[11px] leading-4.5 text-slate-600">{item.action}</p>
+      </div>
+    </article>
+  );
+}
+
+function RoadmapListCard({ icon, title, items }: { icon: ReactNode; title: string; items: string[] }) {
+  return (
+    <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="flex items-center gap-2">
+        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-600">{icon}</span>
         <h3 className="text-sm font-black text-slate-950">{title}</h3>
       </div>
       <div className="mt-4 space-y-2.5">
@@ -1560,6 +2117,14 @@ function RoadmapListCard({
         )}
       </div>
     </article>
+  );
+}
+
+function EmptyState({ text }: { text: string }) {
+  return (
+    <div className="mt-5 rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
+      <p className="text-xs text-slate-500">{text}</p>
+    </div>
   );
 }
 

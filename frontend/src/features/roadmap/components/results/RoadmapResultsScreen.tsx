@@ -46,21 +46,21 @@ export default function RoadmapResultsScreen({
   );
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen overflow-x-hidden bg-white text-slate-900">
       <BackgroundGlow />
 
-      <main className="relative mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6 sm:pt-10 lg:px-8">
-        <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_18px_60px_-30px_rgba(15,23,42,0.28)]">
+      <main className="relative mx-auto w-full max-w-6xl px-3 pb-16 pt-5 sm:px-6 sm:pt-10 lg:px-8">
+        <section className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-[0_18px_60px_-30px_rgba(15,23,42,0.28)] sm:rounded-[2rem]">
           {/* HERO */}
-          <div className="border-b border-slate-200 bg-slate-50/80 px-5 py-6 sm:px-8 sm:py-8">
+          <div className="border-b border-slate-200 bg-slate-50/80 px-4 py-5 sm:px-8 sm:py-8">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-3xl">
                 <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-700">
-                  <Sparkles className="h-3.5 w-3.5" />
+                  <Sparkles aria-hidden="true" className="h-3.5 w-3.5" />
                   Personalized roadmap
                 </div>
 
-                <h1 className="mt-4 text-2xl font-black tracking-tight text-slate-950 sm:text-4xl">
+                <h1 className="mt-4 break-words text-[1.55rem] font-black leading-[1.1] tracking-tight text-slate-950 sm:text-4xl">
                   Your path to {roadmap.target_role}
                 </h1>
 
@@ -69,7 +69,7 @@ export default function RoadmapResultsScreen({
                 </p>
               </div>
 
-              <div className="flex shrink-0 flex-wrap items-end justify-start gap-2 sm:justify-end">
+              <div className="flex w-full shrink-0 flex-wrap items-center justify-start gap-2 sm:w-auto sm:items-end sm:justify-end">
                 <PDFExportButton
                   endpoint="/api/pdf/roadmap"
                   payload={{
@@ -101,11 +101,11 @@ export default function RoadmapResultsScreen({
           </div>
 
           {/* CAREER SNAPSHOT */}
-          <section className="border-b border-slate-200 px-5 py-6 sm:px-8 sm:py-8">
+          <section aria-labelledby="roadmap-career-snapshot" className="border-b border-slate-200 px-4 py-6 sm:px-8 sm:py-8">
             <SectionHeading
               eyebrow="Career snapshot"
               title="Where you are starting from"
-              icon={<Target className="h-4 w-4" />}
+              icon={<Target aria-hidden="true" className="h-4 w-4" />}
             />
 
             <div className="mt-5">
@@ -114,7 +114,7 @@ export default function RoadmapResultsScreen({
           </section>
 
           {/* STRENGTHS + GAPS */}
-          <div className="grid gap-4 border-b border-slate-200 p-5 sm:grid-cols-2 sm:p-8">
+          <div className="grid gap-3 border-b border-slate-200 p-4 sm:grid-cols-2 sm:gap-4 sm:p-8">
             <InsightCard
               icon={<CheckCircle2 className="h-4 w-4" />}
               title="Starting strengths"
@@ -133,7 +133,7 @@ export default function RoadmapResultsScreen({
           </div>
 
           {/* WHY THIS ROADMAP */}
-          <section className="border-b border-slate-200 px-5 py-7 sm:px-8 sm:py-9">
+          <section className="border-b border-slate-200 px-4 py-6 sm:px-8 sm:py-9">
             <SectionHeading
               eyebrow="Roadmap strategy"
               title="Why this roadmap"
@@ -141,12 +141,12 @@ export default function RoadmapResultsScreen({
             />
 
             <div className="mt-5 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-              <article className="rounded-3xl border border-indigo-100 bg-indigo-50/50 p-5 sm:p-6">
+              <article className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 sm:rounded-3xl sm:p-6">
                 <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-600">
                   Strategy
                 </p>
 
-                <p className="mt-3 text-sm leading-6 text-slate-700">
+                <p className="mt-3 break-words text-sm leading-6 text-slate-700">
                   {roadmap.roadmap_strategy.summary}
                 </p>
 
@@ -156,14 +156,14 @@ export default function RoadmapResultsScreen({
                       Personalization logic
                     </p>
 
-                    <p className="mt-2 text-sm leading-6 text-slate-700">
+                    <p className="mt-2 break-words text-sm leading-6 text-slate-700">
                       {roadmap.roadmap_strategy.why_this_roadmap}
                     </p>
                   </div>
                 ) : null}
               </article>
 
-              <article className="rounded-3xl border border-slate-200 bg-slate-50/60 p-5 sm:p-6">
+              <article className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:rounded-3xl sm:p-6">
                 <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
                   Approach
                 </p>
@@ -180,7 +180,7 @@ export default function RoadmapResultsScreen({
                             {index + 1}
                           </span>
 
-                          <p className="text-xs leading-5 text-slate-600">
+                          <p className="break-words text-xs leading-5 text-slate-600">
                             {item}
                           </p>
                         </div>
@@ -214,11 +214,11 @@ export default function RoadmapResultsScreen({
           </section>
 
           {/* SKILL MAP */}
-          <section className="border-b border-slate-200 px-5 py-7 sm:px-8 sm:py-9">
+          <section className="border-b border-slate-200 px-4 py-6 sm:px-8 sm:py-9">
             <SectionHeading
               eyebrow="Skill map"
               title="What to strengthen for the target role"
-              icon={<Code2 className="h-4 w-4" />}
+              icon={<Code2 aria-hidden="true" className="h-4 w-4" />}
             />
 
             {roadmap.skill_map.length > 0 ? (
@@ -236,7 +236,7 @@ export default function RoadmapResultsScreen({
           </section>
 
           {/* CAREER JOURNEY */}
-          <section className="px-5 py-7 sm:px-8 sm:py-9">
+          <section className="px-4 py-6 sm:px-8 sm:py-9">
             <div className="flex items-end justify-between gap-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600">
@@ -282,7 +282,7 @@ export default function RoadmapResultsScreen({
             <SectionHeading
               eyebrow="Career readiness"
               title="What readiness looks like"
-              icon={<BriefcaseBusiness className="h-4 w-4" />}
+              icon={<BriefcaseBusiness aria-hidden="true" className="h-4 w-4" />}
             />
 
             {roadmap.career_readiness.length > 0 ? (
@@ -304,7 +304,7 @@ export default function RoadmapResultsScreen({
             <SectionHeading
               eyebrow="Final check"
               title="Final readiness checklist"
-              icon={<ShieldCheck className="h-4 w-4" />}
+              icon={<ShieldCheck aria-hidden="true" className="h-4 w-4" />}
             />
 
             {roadmap.final_readiness_checklist.length > 0 ? (
@@ -322,7 +322,7 @@ export default function RoadmapResultsScreen({
                         />
                       </span>
 
-                      <p className="text-sm leading-5 text-slate-700">
+                      <p className="break-words text-sm leading-5 text-slate-700">
                         {item}
                       </p>
                     </div>
@@ -385,7 +385,7 @@ export default function RoadmapResultsScreen({
               {typeof roadmap.next_action.estimated_minutes ===
               "number" ? (
                 <span className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-bold text-slate-600">
-                  <Clock3 className="h-3.5 w-3.5" />
+                  <Clock3 aria-hidden="true" className="h-3.5 w-3.5" />
                   {roadmap.next_action.estimated_minutes} min
                 </span>
               ) : null}
@@ -393,7 +393,7 @@ export default function RoadmapResultsScreen({
           </section>
 
           {/* ACTION FOOTER */}
-          <footer className="flex flex-col gap-4 border-t border-slate-200 bg-slate-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <footer className="flex flex-col gap-4 border-t border-slate-200 bg-slate-100 px-4 pt-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-5">
             <div>
               <p className="text-xs font-semibold text-slate-700">
                 Your roadmap is stored only in this temporary CareerMap session.
@@ -406,12 +406,13 @@ export default function RoadmapResultsScreen({
               ) : null}
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
               {cameFromAnalyzer ? (
                 <button
                   type="button"
                   onClick={() => navigate("/analyzer")}
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-xs font-bold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                  aria-label="Return to the Resume and JD Analyzer"
+                  className="inline-flex min-h-11 w-full touch-manipulation items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-xs font-bold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 active:scale-[0.995] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/15 sm:min-h-10 sm:w-auto"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Resume &amp; JD Analyzer
@@ -421,7 +422,8 @@ export default function RoadmapResultsScreen({
               <button
                 type="button"
                 onClick={onStartOver}
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white transition hover:bg-slate-800"
+                aria-label="Start another CareerMap roadmap"
+                className="inline-flex min-h-11 w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-bold text-white transition hover:bg-slate-800 active:scale-[0.995] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-900/15 sm:min-h-10 sm:w-auto"
               >
                 Build another roadmap
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -443,6 +445,11 @@ function SectionHeading({
   title: string;
   icon: ReactNode;
 }) {
+  const headingId = `roadmap-section-${title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")}`;
+
   return (
     <div>
       <div className="flex items-center gap-2 text-indigo-600">
@@ -453,7 +460,7 @@ function SectionHeading({
         </p>
       </div>
 
-      <h2 className="mt-1 text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
+      <h2 id={headingId} className="mt-1 text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
         {title}
       </h2>
     </div>
@@ -479,7 +486,7 @@ function InsightCard({
       : "border-amber-100 bg-amber-50/60 text-amber-700";
 
   return (
-    <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-6">
       <div className="flex items-center gap-2">
         <span
           className={`flex h-8 w-8 items-center justify-center rounded-xl border ${toneClasses}`}
@@ -497,7 +504,7 @@ function InsightCard({
               key={`${index}-${item}`}
               className="flex items-start gap-2.5"
             >
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300" />
+              <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300" />
 
               <p className="text-xs leading-5 text-slate-600">{item}</p>
             </div>
@@ -520,7 +527,7 @@ function SkillMapCard({
   const statusClasses = getSkillStatusClasses(skill.status);
 
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md motion-reduce:transition-none">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="break-words text-sm font-bold text-slate-900">
@@ -590,7 +597,7 @@ function WeeklyRoutineCard({
   items: GeneratedRoadmap["weekly_routine"];
 }) {
   return (
-    <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-6">
       <div className="flex items-center gap-2">
         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
           <Clock3 className="h-4 w-4" />
@@ -790,7 +797,7 @@ function RoadmapListCard({
               key={`${index}-${item}`}
               className="flex items-start gap-2.5"
             >
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400" />
+              <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400" />
 
               <p className="text-xs leading-5 text-slate-600">{item}</p>
             </div>
@@ -818,7 +825,7 @@ function buildRoadmapFilename(targetRole: string): string {
 function EmptyState({ text }: { text: string }) {
   return (
     <div className="mt-5 rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
-      <p className="text-xs text-slate-500">{text}</p>
+      <p className="break-words text-xs leading-5 text-slate-500">{text}</p>
     </div>
   );
 }
