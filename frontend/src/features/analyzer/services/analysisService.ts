@@ -6,12 +6,14 @@ import type {
   SkillStatus,
 } from "@/features/analyzer/types/careerAnalysis";
 
+import { apiUrl } from "../../../lib/api";
+
 export interface AnalyzeResumeInput {
   resumeFile: File;
   jobDescription: string;
 }
 
-const API_ENDPOINT = "/api/analyze";
+const API_ENDPOINT = apiUrl("/api/analyze");
 const REQUEST_TIMEOUT_MS = 120_000;
 
 /* ============================================================
@@ -372,27 +374,25 @@ function normalizeAnalyzerResponse(
         )
       : null;
 
-  const localAnalysis =
-    {
-      role: local.role,
-      scoreBreakdown,
-      ats,
-      skills,
-      missingSkills,
-      keywords,
-      semantic,
-      experience,
-      education,
-      strengths,
-      improvements,
-    };
+  const localAnalysis = {
+    role: local.role,
+    scoreBreakdown,
+    ats,
+    skills,
+    missingSkills,
+    keywords,
+    semantic,
+    experience,
+    education,
+    strengths,
+    improvements,
+  };
 
-  const analyzerResult: AnalyzerResult =
-    {
-      localAnalysis,
-      geminiValidation,
-      geminiEnhancement,
-    };
+  const analyzerResult: AnalyzerResult = {
+    localAnalysis,
+    geminiValidation,
+    geminiEnhancement,
+  };
 
   return {
     ...analyzerResult,
@@ -735,10 +735,13 @@ function mapGeminiValidation(
           id: issue.id,
           severity:
             issue.severity,
+
           area:
             issue.area,
+
           issue:
             issue.issue,
+
           suggestedReview:
             issue.suggested_review,
         }),

@@ -3,16 +3,21 @@ import type {
   GenerateRoadmapResponse,
 } from "../types/roadmapApi";
 
+import { apiUrl } from "../../../lib/api";
+
 export async function generateRoadmap(
   payload: GenerateRoadmapRequest,
 ): Promise<GenerateRoadmapResponse> {
-  const response = await fetch("/api/roadmap/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await fetch(
+    apiUrl("/api/roadmap/generate"),
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     },
-    body: JSON.stringify(payload),
-  });
+  );
 
   const result: unknown = await response
     .json()

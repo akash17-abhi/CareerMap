@@ -1,4 +1,5 @@
 import type { ResumeExtractionResponse } from "../types/roadmapApi";
+import { apiUrl } from "../../../lib/api";
 
 export async function extractResumeProfile(
   file: File,
@@ -6,10 +7,13 @@ export async function extractResumeProfile(
   const formData = new FormData();
   formData.append("resume", file);
 
-  const response = await fetch("/api/roadmap/resume/extract", {
-    method: "POST",
-    body: formData,
-  });
+  const response = await fetch(
+    apiUrl("/api/roadmap/resume/extract"),
+    {
+      method: "POST",
+      body: formData,
+    },
+  );
 
   const payload =
     (await response.json().catch(() => null)) as

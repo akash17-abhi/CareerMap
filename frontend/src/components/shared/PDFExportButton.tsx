@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Download } from "lucide-react";
 
+import { apiUrl } from "@/lib/api";
+
 interface PDFExportButtonProps {
   endpoint: string;
   payload: Record<string, unknown>;
@@ -30,7 +32,7 @@ export default function PDFExportButton({
     setError(null);
 
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(apiUrl(endpoint), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

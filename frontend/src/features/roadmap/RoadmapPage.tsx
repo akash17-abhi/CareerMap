@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 
 import { useCareerMapSession } from "@/context/CareerMapSessionContext";
+import { apiUrl } from "@/lib/api";
 import EntryCard from "@/features/roadmap/components/setup/EntryCard";
 import ChoiceButton from "@/features/roadmap/components/setup/ChoiceButton";
 import type {
@@ -392,7 +393,7 @@ function RoadmapPage() {
       formData.append("resume", file);
 
       const response = await fetch(
-        "/api/roadmap/resume/extract",
+        apiUrl("/api/roadmap/resume/extract"),
         {
           method: "POST",
           body: formData,
@@ -654,7 +655,7 @@ function RoadmapPage() {
     setGenerationError(null);
 
     try {
-      const response = await fetch("/api/roadmap/generate", {
+      const response = await fetch(apiUrl("/api/roadmap/generate"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
