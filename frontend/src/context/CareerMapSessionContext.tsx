@@ -45,7 +45,7 @@ export interface RoadmapSessionInput {
 }
 
 interface StoredCareerMapSession {
-  version: 1;
+  version: 2;
 
   analysis: CareerAnalysis | null;
 
@@ -105,7 +105,12 @@ export interface CareerMapSessionValue {
 }
 
 const STORAGE_KEY =
+  "careermap:temporary-session:v2";
+
+const LEGACY_STORAGE_KEY =
   "careermap:temporary-session:v1";
+
+const STORAGE_VERSION = 2 as const;
 
 const CareerMapSessionContext =
   createContext<CareerMapSessionValue | undefined>(
@@ -118,7 +123,7 @@ interface CareerMapSessionProviderProps {
 
 function createEmptyStoredSession(): StoredCareerMapSession {
   return {
-    version: 1,
+    version: STORAGE_VERSION,
     analysis: null,
     analyzedRole: null,
     resumeMetadata: null,
@@ -159,22 +164,57 @@ function isResumeMetadata(
   return (
     typeof value.name === "string" &&
     typeof value.type === "string" &&
-    typeof value.size === "number"
+    typeof value.size === "number" &&
+    Number.isFinite(value.size) &&
+    value.size >= 0
   );
 }
 
 /*
- * This is intentionally a lightweight runtime guard.
+ * Lightweight but meaningful v2 roadmap guard.
  *
- * The backend remains the source of truth for validating the
- * complete GeneratedRoadmap structure. The client only needs
- * to make sure sessionStorage does not restore an obviously
- * invalid non-object value.
+ * The backend remains the source of truth for the complete
+ * GeneratedRoadmap schema. This guard exists only so stale,
+ * partially migrated, or obviously incompatible sessionStorage
+ * data cannot reach the v2 results UI.
  */
 function isGeneratedRoadmap(
   value: unknown,
 ): value is GeneratedRoadmap {
-  return isPlainObject(value);
+  if (!isPlainObject(value)) {
+    return false;
+  }
+
+  if (
+    typeof value.target_role !== "string" ||
+    typeof value.profile_summary !== "string"
+  ) {
+    return false;
+  }
+
+  if (
+    !isPlainObject(value.career_snapshot) ||
+    !isPlainObject(value.roadmap_strategy) ||
+    !isPlainObject(value.next_action)
+  ) {
+    return false;
+  }
+
+  if (
+    !Array.isArray(value.starting_strengths) ||
+    !Array.isArray(value.priority_gaps) ||
+    !Array.isArray(value.skill_map) ||
+    !Array.isArray(value.phases) ||
+    !Array.isArray(value.weekly_routine) ||
+    !Array.isArray(value.portfolio_outcomes) ||
+    !Array.isArray(value.career_readiness) ||
+    !Array.isArray(value.final_readiness_checklist) ||
+    !Array.isArray(value.grounding_notes)
+  ) {
+    return false;
+  }
+
+  return true;
 }
 
 function isRoadmapSessionInput(
@@ -217,6 +257,14 @@ function isRoadmapSessionInput(
   }
 
   if (
+    value.analyzerContext !== undefined &&
+    value.analyzerContext !== null &&
+    !isPlainObject(value.analyzerContext)
+  ) {
+    return false;
+  }
+
+  if (
     value.generatedRoadmap !== undefined &&
     !isGeneratedRoadmap(value.generatedRoadmap)
   ) {
@@ -233,12 +281,35 @@ function isRoadmapSessionInput(
   return true;
 }
 
+function removeLegacySession(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.sessionStorage.removeItem(
+      LEGACY_STORAGE_KEY,
+    );
+  } catch {
+    /*
+     * Ignore cleanup failures. The new v2 session
+     * remains usable.
+     */
+  }
+}
+
 function readStoredSession(): StoredCareerMapSession {
   if (typeof window === "undefined") {
     return createEmptyStoredSession();
   }
 
   try {
+    /*
+     * v2 is intentionally incompatible with v1.
+     * Remove the legacy key when this provider starts.
+     */
+    removeLegacySession();
+
     const raw = window.sessionStorage.getItem(
       STORAGE_KEY,
     );
@@ -250,10 +321,12 @@ function readStoredSession(): StoredCareerMapSession {
     const parsed: unknown = JSON.parse(raw);
 
     if (!isPlainObject(parsed)) {
+      window.sessionStorage.removeItem(STORAGE_KEY);
       return createEmptyStoredSession();
     }
 
-    if (parsed.version !== 1) {
+    if (parsed.version !== STORAGE_VERSION) {
+      window.sessionStorage.removeItem(STORAGE_KEY);
       return createEmptyStoredSession();
     }
 
@@ -264,19 +337,37 @@ function readStoredSession(): StoredCareerMapSession {
       parsed.analyzedRole ?? null;
 
     const resumeMetadata =
-      parsed.resumeMetadata;
+      parsed.resumeMetadata ?? null;
 
     const roadmap =
-      parsed.roadmap;
+      parsed.roadmap ?? null;
 
     const roadmapInput =
-      parsed.roadmapInput;
+      parsed.roadmapInput ?? null;
 
     const roadmapSource =
-      parsed.roadmapSource;
+      parsed.roadmapSource ?? null;
+
+    /*
+     * Invalid stored roadmap data is discarded instead of
+     * being rendered by the v2 Results screen.
+     */
+    const validatedRoadmap =
+      roadmap === null
+        ? null
+        : isGeneratedRoadmap(roadmap)
+          ? roadmap
+          : null;
+
+    const validatedRoadmapInput =
+      roadmapInput === null
+        ? null
+        : isRoadmapSessionInput(roadmapInput)
+          ? roadmapInput
+          : null;
 
     return {
-      version: 1,
+      version: STORAGE_VERSION,
 
       analysis:
         analysis === null
@@ -296,19 +387,9 @@ function readStoredSession(): StoredCareerMapSession {
             ? resumeMetadata
             : null,
 
-      roadmap:
-        roadmap === null
-          ? null
-          : isGeneratedRoadmap(roadmap)
-            ? roadmap
-            : null,
+      roadmap: validatedRoadmap,
 
-      roadmapInput:
-        roadmapInput === null
-          ? null
-          : isRoadmapSessionInput(roadmapInput)
-            ? roadmapInput
-            : null,
+      roadmapInput: validatedRoadmapInput,
 
       roadmapSource:
         isRoadmapSource(roadmapSource)
@@ -316,6 +397,14 @@ function readStoredSession(): StoredCareerMapSession {
           : null,
     };
   } catch {
+    try {
+      window.sessionStorage.removeItem(
+        STORAGE_KEY,
+      );
+    } catch {
+      // Ignore storage cleanup failures.
+    }
+
     return createEmptyStoredSession();
   }
 }
@@ -416,6 +505,10 @@ export function CareerMapSessionProvider({
   /*
    * Persist the complete temporary session whenever
    * it changes after hydration.
+   *
+   * v2 storage is intentionally separate from the
+   * previous v1 session so stale roadmap structures
+   * cannot be restored into the new UI.
    */
   useEffect(() => {
     if (!isHydrated) {
@@ -423,7 +516,7 @@ export function CareerMapSessionProvider({
     }
 
     writeStoredSession({
-      version: 1,
+      version: STORAGE_VERSION,
       analysis,
       analyzedRole,
       resumeMetadata,
@@ -462,6 +555,7 @@ export function CareerMapSessionProvider({
     setRoadmapSource(null);
 
     removeStoredSession();
+    removeLegacySession();
   };
 
   const value = useMemo<CareerMapSessionValue>(

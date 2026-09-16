@@ -17,6 +17,7 @@ import {
 import type { GeneratedRoadmap } from "../../types/roadmap";
 import { formatRoadmapDate } from "../../utils/roadmapFormatters";
 import { BackgroundGlow } from "../shared/RoadmapUI";
+import PDFExportButton from "@/components/shared/PDFExportButton";
 
 import RoadmapOverview from "./RoadmapOverview";
 import RoadmapPhaseCard from "./RoadmapPhaseCard";
@@ -68,7 +69,19 @@ export default function RoadmapResultsScreen({
                 </p>
               </div>
 
-              <div className="flex shrink-0 flex-wrap gap-2">
+              <div className="flex shrink-0 flex-wrap items-end justify-start gap-2 sm:justify-end">
+                <PDFExportButton
+                  endpoint="/api/pdf/roadmap"
+                  payload={{
+                    roadmap,
+                    source,
+                    generated_at: generatedAt,
+                  }}
+                  filename={buildRoadmapFilename(roadmap.target_role)}
+                  label="Export PDF"
+                  exportingLabel="Generating PDF..."
+                />
+
                 <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-semibold text-slate-600">
                   {totalPhases} {totalPhases === 1 ? "phase" : "phases"}
                 </span>
@@ -788,6 +801,18 @@ function RoadmapListCard({
       </div>
     </article>
   );
+}
+
+function buildRoadmapFilename(targetRole: string): string {
+  const safeRole = targetRole
+    .trim()
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
+
+  return safeRole
+    ? `careermap-${safeRole}-roadmap.pdf`
+    : "careermap-career-roadmap.pdf";
 }
 
 function EmptyState({ text }: { text: string }) {
